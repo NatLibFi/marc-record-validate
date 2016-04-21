@@ -1,0 +1,15 @@
+    );
+  }
+
+}(this, factory));
+
+function factory()
+{
+
+  'use strict';
+
+  return arguments[0].call(Array.prototype.map.call(arguments, function(arg) {
+    return arg;
+  }));
+
+}

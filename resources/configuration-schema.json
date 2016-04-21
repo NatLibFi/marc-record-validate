@@ -1,0 +1,20 @@
+{
+  "type": "object",
+  "properties": {
+    "validators": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "failOnError": {
+      "type": "boolean",
+      "default": true
+    },
+    "fix": {
+      "type": "boolean",
+      "default": false
+    }
+  }
+}
