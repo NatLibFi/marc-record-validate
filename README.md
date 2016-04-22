@@ -18,13 +18,15 @@ validate(record);
 
 ### AMD
 ```js
-define['marc-record-validate'], function(validateFactory) {
+define(['marc-record-validate'], function(validateFactory) {
 
-var validate = validateFactory({
-  fix: true
+  var validate = validateFactory({
+    fix: true
+  });
+
+  validate(record);
+
 });
-
-validate(record);
 ```
 
 ## Specifying custom validators
@@ -35,7 +37,7 @@ Use **marc_record-validate/lib/validate** to speficy the validators:
 var fn_factory = require('marc-record-validate/lib/validate')([
   require('marc-record-validate/lib/validators/some-validator'),
   require('my-validators/lib/foobar')
-])
+]);
 
 fn_factory({
   fix: true
