@@ -13,9 +13,7 @@ var validate = require('marc-record-validate'){
   fix: true
 });
 
-validate({
-  fix: true
-})(record);
+validate(record);
 ```
 
 ### AMD
