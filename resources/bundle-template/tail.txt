@@ -1,3 +1,4 @@
+
     );
   }
 
@@ -8,8 +9,12 @@ function factory()
 
   'use strict';
 
-  return arguments[0].call(Array.prototype.map.call(arguments, function(arg) {
-    return arg;
-  }));
+  var args = [];
+
+  for (var i = 0; i < arguments.length; i++) {
+    args.push(arguments[i]);
+  }
+
+  return arguments[0].call(args);
 
 }

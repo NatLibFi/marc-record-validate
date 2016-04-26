@@ -1,4 +1,5 @@
+
     ], factory);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(
-      require('./validate'),
+      require('marc-record-validate')

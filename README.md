@@ -2,51 +2,78 @@
 
 **IN DEVELOPMENT**
 
-Validate and fix MARC records
+This project contains the software to run MARC validators. For the actual validators, see [marc-record-validators-melinda](https://github.com/natlibfi/marc-record-validators-melinda).
+
+See the [wiki](https://github.com/NatLibFi/marc-record-validate/wiki/Writing-validators) on how to write validators.
 
 ## Usage
+
+When the validate function is called on a MARC record (Implemented by [marc-record-js](https://github.com/natlibfi/marc-record-js)) each enabled validator is run to provide information about the record's validity. The validators can also fix warnings returned by the validator, if enabled.
+
+The function returns an object which contains the validator messages and fix modifications:
+
+```js
+{
+  "failed": false,
+  "validators": {
+    "foo": {
+      "validate": [{
+        "tag": "245",
+        "messages": [{
+          "type": "warning",
+          "messages": "Has 'fu' instead of 'foo'"
+        }]  
+      }],
+      "fix": [{
+        "tag": "245",
+        "modifications": [{
+          "type": "modifySubfield",
+          "old": {
+            "code": "a",
+            "value": "All is fubar"
+          },
+          "new": {
+            "code": "a",
+            "value": "All is foobar"
+          }
+        }]
+      }]
+    }
+  }
+}
+```
 
 ### Node.js
 
 ```js
-var validate = require('marc-record-validate'){
-  fix: true
-});
+validate = require('marc-record-validate')([
+  require('foobar/lib/validators/foo'),
+  require('foobar/lib/validators/bar'),
+])(config),
+results = validate(record);
 
-validate(record);
 ```
 
 ### AMD
 ```js
-define(['marc-record-validate'], function(validateFactory) {
+define(['marc-record-validate'], function(validationFactory, validator_foo, validator_bar) {
 
-  var validate = validateFactory({
-    fix: true
-  });
-
-  validate(record);
+  var validate = require(config)([
+    validator_foo,
+    validator_bar
+  ])(),
+  results = validate(record);
 
 });
 ```
 
-## Specifying custom validators
-
-Use **marc_record-validate/lib/validate** to speficy the validators:
-
-```js
-var fn_factory = require('marc-record-validate/lib/validate')([
-  require('marc-record-validate/lib/validators/some-validator'),
-  require('my-validators/lib/foobar')
-]);
-
-fn_factory({
-  fix: true
-})(record);
-```
-
 ## Configuration
 
-TODO
+The configuration is passed as an object to the function returned by the factory. The following properties are supported:
+
+- **validators** *(array)*: An array of validator names. The specified will be enabled. Defaults to empty (All validators enabled)
+- **failOnError** *(boolean)*: Throw an error immediately if a validator return an error message. Defaults to true.
+- **fix** *(boolean)*: Whether to fix records which had any warnings (Returned by the validator). Defaults to false.
 
 ## Development 
 

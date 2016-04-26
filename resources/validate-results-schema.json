@@ -23,7 +23,8 @@
           "enum": [
             "error",
             "warning",
-            "info"
+            "info",
+            "debug"
           ]
         },
         "message": {

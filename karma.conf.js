@@ -14,7 +14,7 @@ module.exports = function(config) {
           text: 'node_modules/requirejs-plugins/lib/text'
         }
       },
-      testRegexp: '^/base/test/[^/].+\.spec\.js$'
+      testRegexp: '^/base/test/.[^/]+\.spec\.js$'
     },
     files: [
       'test/browser-main.js',
