@@ -8,7 +8,7 @@ See the [wiki](https://github.com/NatLibFi/marc-record-validate/wiki/Writing-val
 
 ## Usage
 
-When the validate function is called on a MARC record (Implemented by [marc-record-js](https://github.com/natlibfi/marc-record-js)) each enabled validator is run to provide information about the record's validity. The validators can also fix warnings returned by the validator, if enabled.
+When the validate function is called on a MARC record (Implemented by [marc-record-js](https://github.com/petuomin/marc-record-js)) each enabled validator is run to provide information about the record's validity. The validators can also fix warnings returned by the validator, if enabled.
 
 The function returns an object which contains the validator messages and fix modifications:
 
