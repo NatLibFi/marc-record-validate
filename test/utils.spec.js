@@ -198,12 +198,13 @@ function factory(chai, utils, MarcRecord)
 
         var field = {
           tag: 'foo'
-        };
+        },
+        field_original = JSON.parse(JSON.stringify(field));
         
         expect(utils.fix.modifyFieldTag(field, 'bar')).to.eql({
-          'type': 'modifyFieldTag',
-          'old': 'foo',
-          'new': 'bar'
+          'type': 'modifyField',
+          'old': field_original,
+          'new': field
         });
 
         expect(field).to.eql({
@@ -233,9 +234,12 @@ function factory(chai, utils, MarcRecord)
         };
         
         expect(utils.fix.modifyFieldValue(field, 'fu')).to.eql({
-          'type': 'modifyFieldValue',
-          'old': 'foo',
-          'new': 'fu'
+          'type': 'modifyField',
+          'old': {
+            tag: 'bar',
+            value: 'foo'
+          },
+          'new': field
         });
 
         expect(field).to.eql({
@@ -262,6 +266,7 @@ function factory(chai, utils, MarcRecord)
 
         expect(utils.fix.addSubfield(field, subfield)).to.eql({
           type: 'addSubfield',
+          field: field,
           subfield: subfield
         });
         expect(field.subfields).to.eql([subfield]);
@@ -285,6 +290,7 @@ function factory(chai, utils, MarcRecord)
 
         expect(utils.fix.removeSubfield(field, subfield)).to.eql({
           type: 'removeSubfield',
+          field: field,
           subfield: subfield
         });
         expect(field.subfields.length).to.equal(0);
@@ -301,20 +307,24 @@ function factory(chai, utils, MarcRecord)
           code: 'foo',
           value: 'bar'
         },
-        subfield_new = {
-          code: 'fu',
-          value: 'bar'
-        };
+        field = {
+          tag: 'foobar',
+          subfields: [subfield]
+        },
+        field_original = JSON.parse(JSON.stringify(field));
 
-        expect(utils.fix.modifySubfieldCode(subfield, 'fu')).to.eql({
-          'type': 'modifySubfieldCode',
-          'old': {
-            code: 'foo',
-            value: 'bar'
-          },
-          'new': subfield_new            
+        expect(utils.fix.modifySubfieldCode(field, subfield, 'fu')).to.eql({
+          'type': 'modifyField',
+          'old': field_original,
+          'new': field
         });
-        expect(subfield).to.eql(subfield_new);
+        expect(field).to.eql({
+          tag: 'foobar',
+          subfields: [{
+            code: 'fu',
+            value: 'bar'
+          }]
+        });
 
       });
 
@@ -326,22 +336,26 @@ function factory(chai, utils, MarcRecord)
 
         var subfield = {
           code: 'bar',
-          value: 'foo'
-        },
-        subfield_new = {
-          code: 'bar',
           value: 'fu'
-        };
+        },
+        field = {
+          tag: 'foobar',
+          subfields: [subfield]
+        },
+        field_original = JSON.parse(JSON.stringify(field));
 
-        expect(utils.fix.modifySubfieldValue(subfield, 'fu')).to.eql({
-          'type': 'modifySubfieldValue',
-          'old': {
-            code: 'bar',
-            value: 'foo'
-          },
-          'new': subfield_new
+        expect(utils.fix.modifySubfieldValue(field, subfield, 'fu')).to.eql({
+          'type': 'modifyField',
+          'old': field_original,
+          'new': field
         });
-        expect(subfield).to.eql(subfield_new);
+        expect(field).to.eql({
+          tag: 'foobar',
+          subfields: [{
+            code: 'bar',
+            value: 'fu'
+          }]
+        });
 
       });
 

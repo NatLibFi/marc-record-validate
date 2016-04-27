@@ -119,7 +119,7 @@ function factory(chai, simple, MarcRecord, createFactory)
         });
 
         it('Should run all validators and return no messages for validation', function() {
-       
+          
           var spy_validate = simple.spy().returnWith([]);
 
           expect(createFactory([{
@@ -141,18 +141,12 @@ function factory(chai, simple, MarcRecord, createFactory)
         it('Should run some validators and return warning messages', function() {
 
           var spy_validate1 = simple.spy().returnWith([{
-            tag: 'foobar',
-            messages: [{
-              type: 'warning',
-              message: 'foobar1'
-            }]
+            type: 'warning',
+            message: 'foobar1'
           }]),
           spy_validate2 = simple.spy().returnWith([{
-            tag: 'foobar',
-            messages: [{
-              type: 'error',
-              message: 'foobar2'
-            }]
+            type: 'error',
+            message: 'foobar2'
           }]);
 
           expect(createFactory([
@@ -171,11 +165,8 @@ function factory(chai, simple, MarcRecord, createFactory)
             validators: {
               foobar1: {
                 validate: [{
-                  tag: 'foobar',
-                  messages: [{
-                    type: 'warning',
-                    message: 'foobar1'
-                  }]
+                  type: 'warning',
+                  message: 'foobar1'
                 }]
               }
             }
@@ -189,25 +180,16 @@ function factory(chai, simple, MarcRecord, createFactory)
         it('Should run validators and fail because of error messages', function() {
 
           var spy_validate1 = simple.spy().returnWith([{
-            tag: 'foobar',
-            messages: [{
-              type: 'warning',
-              message: 'foobar1'
-            }]
+            type: 'warning',
+            message: 'foobar1'
           }]),
           spy_validate2 = simple.spy().returnWith([{
-            tag: 'foobar',
-            messages: [{
-              type: 'error',
-              message: 'foobar2'
-            }]
+            type: 'error',
+            message: 'foobar2'
           }]),
           spy_validate3 = simple.spy().returnWith([{
-            tag: 'foobar',
-            messages: [{
-              type: 'info',
-              message: 'foobar3'
-            }]
+            type: 'info',
+            message: 'foobar3'
           }]);
 
 
@@ -229,20 +211,14 @@ function factory(chai, simple, MarcRecord, createFactory)
             validators: {
               foobar1: {
                 validate: [{
-                  tag: 'foobar',
-                  messages: [{
-                    type: 'warning',
-                    message: 'foobar1'
-                  }]
+                  type: 'warning',
+                  message: 'foobar1'
                 }]
               },
               foobar2: {
                 validate: [{
-                  tag: 'foobar',
-                  messages: [{
-                    type: 'error',
-                    message: 'foobar2'
-                  }]
+                  type: 'error',
+                  message: 'foobar2'
                 }]
               }
             }
@@ -257,25 +233,16 @@ function factory(chai, simple, MarcRecord, createFactory)
         it('Should run validators and not fail because failOnError is false', function() {
 
           var spy_validate1 = simple.spy().returnWith([{
-            tag: 'foobar',
-            messages: [{
-              type: 'warning',
-              message: 'foobar1'
-            }]
+            type: 'warning',
+            message: 'foobar1'
           }]),
           spy_validate2 = simple.spy().returnWith([{
-            tag: 'foobar',
-            messages: [{
-              type: 'error',
-              message: 'foobar2'
-            }]
+            type: 'error',
+            message: 'foobar2'
           }]),
           spy_validate3 = simple.spy().returnWith([{
-            tag: 'foobar',
-            messages: [{
-              type: 'info',
-              message: 'foobar3'
-            }]
+            type: 'info',
+            message: 'foobar3'
           }]);
 
           expect(createFactory([
@@ -298,29 +265,20 @@ function factory(chai, simple, MarcRecord, createFactory)
             validators: {
               foobar1: {
                 validate: [{
-                  tag: 'foobar',
-                  messages: [{
-                    type: 'warning',
-                    message: 'foobar1'
-                  }]
+                  type: 'warning',
+                  message: 'foobar1'
                 }]
               },
               foobar2: {
                 validate: [{
-                  tag: 'foobar',
-                  messages: [{
-                    type: 'error',
-                    message: 'foobar2'
-                  }]
+                  type: 'error',
+                  message: 'foobar2'
                 }]
               },
               foobar3: {
                 validate: [{
-                  tag: 'foobar',
-                  messages: [{
-                    type: 'info',
-                    message: 'foobar3'
-                  }]
+                  type: 'info',
+                  message: 'foobar3'
                 }]
               }
             }
@@ -338,11 +296,8 @@ function factory(chai, simple, MarcRecord, createFactory)
               name: 'foobar',
               fix: simple.stub(),
               validate: simple.stub().returnWith([{
-                tag: 'foobar',
-                messages: [{
-                  type: 'warning',
-                  message: 'foobar'
-                }]
+                type: 'warning',
+                message: 'foobar'
               }])
             }])({
               fix: true
@@ -360,23 +315,23 @@ function factory(chai, simple, MarcRecord, createFactory)
             }]
           }),
           spy_validate = simple.spy().returnWith([{
-            tag: 'bar',
-            messages: [{
-              type: 'warning',
-              message: 'foobar'
-            }]
+            type: 'warning',
+            message: 'foobar'
           }]),
           spy_fix = simple.spy(function(rec) {
 
             rec.fields[0].value = 'fu';
 
             return [{
-              tag: 'bar',
-              modifications: [{
-                'type': 'modifyFieldValue',
-                'old': 'foo',
-                'new': 'fu'
-              }]
+              'type': 'modifyField',
+              'old': {
+                tag: 'bar',
+                value: 'foo'
+              },
+              'new': {
+                tag: 'bar',
+                value: 'fu'
+              }
             }];
 
           });
@@ -392,19 +347,19 @@ function factory(chai, simple, MarcRecord, createFactory)
             validators: {
               foobar: {
                 validate: [{
-                  tag: 'bar',
-                  messages: [{
-                    type: 'warning',
-                    message: 'foobar'
-                  }]
+                  type: 'warning',
+                  message: 'foobar'
                 }],
                 fix: [{
-                  tag: 'bar',
-                  modifications: [{
-                    'type': 'modifyFieldValue',
-                    'old': 'foo',
-                    'new': 'fu'
-                  }]
+                  'type': 'modifyField',
+                  'old': {
+                    tag: 'bar',
+                    value: 'foo'
+                  },
+                  'new': {
+                    tag: 'bar',
+                    value: 'fu'
+                  }
                 }]
               }
             }
