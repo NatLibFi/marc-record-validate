@@ -172,11 +172,10 @@ function factory(chai, simple, MarcRecord, createFactory)
             })
           }])()(new MarcRecord())).to.eql({
             failed: false,
-            validators: {
-              foo: {
-                validate: []
-              }
-            }
+            validators: [{
+              name: 'foo',
+              validate: []
+            }]
           });
 
           expect(spy_validate.callCount).to.equal(1);
@@ -211,14 +210,13 @@ function factory(chai, simple, MarcRecord, createFactory)
             validators: ['foobar1']
           })(new MarcRecord())).to.eql({
             failed: false,
-            validators: {
-              foobar1: {
-                validate: [{
-                  type: 'warning',
-                  message: 'foobar1'
-                }]
-              }
-            }
+            validators: [{
+              name: 'foobar1',
+              validate: [{
+                type: 'warning',
+                message: 'foobar1'
+              }]
+            }]
           });
 
           expect(spy_validate1.callCount).to.equal(1);
@@ -263,20 +261,22 @@ function factory(chai, simple, MarcRecord, createFactory)
             },
           ])()(new MarcRecord())).to.eql({
             failed: true,
-            validators: {
-              foobar1: {
+            validators: [
+              {
+                name: 'foobar1',
                 validate: [{
                   type: 'warning',
                   message: 'foobar1'
                 }]
               },
-              foobar2: {
+              {
+                name: 'foobar2',
                 validate: [{
                   type: 'error',
                   message: 'foobar2'
                 }]
               }
-            }
+            ]
           });
           
           expect(spy_validate1.callCount).to.equal(1);
@@ -323,26 +323,29 @@ function factory(chai, simple, MarcRecord, createFactory)
             failOnError: false
           })(new MarcRecord())).to.eql({
             failed: false,
-            validators: {
-              foobar1: {
+            validators: [
+              {
+                name: 'foobar1',
                 validate: [{
                   type: 'warning',
                   message: 'foobar1'
                 }]
               },
-              foobar2: {
+              {
+                name: 'foobar2',
                 validate: [{
                   type: 'error',
                   message: 'foobar2'
                 }]
               },
-              foobar3: {
+              {
+                name: 'foobar3',
                 validate: [{
                   type: 'info',
                   message: 'foobar3'
                 }]
               }
-            }
+            ]
           });
 
           expect(spy_validate1.callCount).to.equal(1);
@@ -409,25 +412,24 @@ function factory(chai, simple, MarcRecord, createFactory)
             fix: true
           })(record)).to.eql({
             failed: false,
-            validators: {
-              foobar: {
-                validate: [{
-                  type: 'warning',
-                  message: 'foobar'
-                }],
-                fix: [{
-                  'type': 'modifyField',
-                  'old': {
-                    tag: 'bar',
-                    value: 'foo'
-                  },
-                  'new': {
-                    tag: 'bar',
-                    value: 'fu'
-                  }
-                }]
-              }
-            }
+            validators: [{
+              name: 'foobar',
+              validate: [{
+                type: 'warning',
+                message: 'foobar'
+              }],
+              fix: [{
+                'type': 'modifyField',
+                'old': {
+                  tag: 'bar',
+                  value: 'foo'
+                },
+                'new': {
+                  tag: 'bar',
+                  value: 'fu'
+                }
+              }]
+            }]
           });
           
           expect(spy_validate.callCount).to.equal(1);

@@ -15,31 +15,30 @@ The function returns an object which contains the validator messages and fix mod
 ```js
 {
   "failed": false,
-  "validators": {
-    "foo": {
-      "validate": [{
-        "tag": "245",
-        "messages": [{
-          "type": "warning",
-          "messages": "Has 'fu' instead of 'foo'"
-        }]  
-      }],
-      "fix": [{
-        "tag": "245",
-        "modifications": [{
-          "type": "modifySubfield",
-          "old": {
-            "code": "a",
-            "value": "All is fubar"
-          },
-          "new": {
-            "code": "a",
-            "value": "All is foobar"
-          }
-        }]
+  "validators": [{
+    "name": "foo",
+    "validate": [{
+      "tag": "245",
+      "messages": [{
+        "type": "warning",
+        "messages": "Has 'fu' instead of 'foo'"
+      }]  
+    }],
+    "fix": [{
+      "tag": "245",
+      "modifications": [{
+        "type": "modifySubfield",
+        "old": {
+          "code": "a",
+          "value": "All is fubar"
+        },
+        "new": {
+          "code": "a",
+          "value": "All is foobar"
+        }
       }]
-    }
-  }
+    }]
+  }]
 }
 ```
 
