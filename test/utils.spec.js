@@ -73,6 +73,14 @@ function factory(chai, utils, MarcRecord)
           });
         });
 
+        it('Should return the expected object with fields', function() {
+          expect(utils.validate.debug('foobar', ['foobar'])).to.eql({
+            type: 'debug',
+            message: 'foobar',
+            fields: ['foobar']
+          });
+        });
+
       });
 
       describe('#info', function() {
@@ -81,6 +89,14 @@ function factory(chai, utils, MarcRecord)
           expect(utils.validate.info('foobar')).to.eql({
             type: 'info',
             message: 'foobar'
+          });
+        });
+
+        it('Should return the expected object with fields', function() {
+          expect(utils.validate.info('foobar', ['foobar'])).to.eql({
+            type: 'info',
+            message: 'foobar',
+            fields: ['foobar']
           });
         });
 
@@ -95,6 +111,14 @@ function factory(chai, utils, MarcRecord)
           });
         });
 
+        it('Should return the expected object with fields', function() {
+          expect(utils.validate.warning('foobar', ['foobar'])).to.eql({
+            type: 'warning',
+            message: 'foobar',
+            fields: ['foobar']
+          });
+        });
+
       });
 
       describe('#error', function() {
@@ -103,6 +127,14 @@ function factory(chai, utils, MarcRecord)
           expect(utils.validate.error('foobar')).to.eql({
             type: 'error',
             message: 'foobar'
+          });
+        });
+
+        it('Should return the expected object with fields', function() {
+          expect(utils.validate.error('foobar', ['foobar'])).to.eql({
+            type: 'error',
+            message: 'foobar',
+            fields: ['foobar']
           });
         });
 

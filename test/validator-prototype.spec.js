@@ -34,20 +34,18 @@
   if (typeof define === 'function' && define.amd) {
     define([
       'chai/chai',
-      'marc-record-js',
       '../lib/validator-prototype'
     ], factory);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(
       require('chai'),
-      require('marc-record-js'),
       require('../lib/validator-prototype')
     );
   }
 
 }(this, factory));
 
-function factory(chai, MarcRecord, validator)
+function factory(chai, validator_factory)
 {
 
   'use strict';
@@ -57,29 +55,41 @@ function factory(chai, MarcRecord, validator)
   describe('validator-prototype', function() {
     
     it('Should be the expected object', function() {
-
-      expect(validator).to.be.an('object').and.to
-        .haveOwnProperty('name')
-        .respondTo('validate').and.to
-        .respondTo('fix');
-
-      expect(validator.name).to.be.a('string');
-
+      expect(validator_factory).to.be.an('object');
+      expect(validator_factory.name).to.be.a('string');
+      expect(validator_factory.factory).to.be.a('function');
     });
-
-
-    describe('#validate', function() {
-
-      it('Should return results that validate against schema', function() {
-        expect(validator.validate(new MarcRecord())).to.not.throw /*jshint -W030 */;
+    
+    describe('#factory', function() {
+      
+      it('Should return the expected object', function() {
+        
+        var obj = validator_factory.factory();
+        
+        expect(obj).to.be.an('object').and.to
+          .respondTo('validate').and.to
+          .respondTo('fix');
+        
       });
-
-    });
-
-    describe('#fix', function() {
-
-      it('Should return results that validate against schema', function() {
-        expect(validator.fix(new MarcRecord())).to.not.throw /*jshint -W030 */;
+      
+      describe('object', function() {
+        
+        describe('#validate', function() {
+          
+          it('Should return an array', function() {
+            expect(validator_factory.factory().validate()).to.be.an('array');
+          });
+          
+        });
+        
+        describe('#fix', function() {
+          
+          it('Should return an array', function() {
+            expect(validator_factory.factory().fix()).to.be.an('array');
+          });
+          
+        });
+        
       });
 
     });
