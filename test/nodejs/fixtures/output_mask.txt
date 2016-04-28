@@ -24,10 +24,10 @@ function factory()
 
   var args = [];
 
-  for (var i = 0; i < arguments.length; i++) {
+  for (var i = 1; i < arguments.length; i++) {
     args.push(arguments[i]);
   }
 
-  return arguments[0].call(args);
+  return arguments[0](args);
 
 }
