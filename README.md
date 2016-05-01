@@ -57,10 +57,10 @@ results = validate(record);
 ```js
 define(['marc-record-validate'], function(validationFactory, validator_foo, validator_bar) {
 
-  var validate = require(config)([
+  var validate = validationFactory([
     validator_foo,
     validator_bar
-  ])(),
+  ])(config),
   results = validate(record);
 
 });
