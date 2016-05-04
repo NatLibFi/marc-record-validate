@@ -27,14 +27,20 @@ The function returns an object which contains the validator messages and fix mod
     "fix": [{
       "tag": "245",
       "modifications": [{
-        "type": "modifySubfield",
+        "type": "modifyField",
         "old": {
-          "code": "a",
-          "value": "All is fubar"
+          "tag": "245",
+          "subfields": [{
+            "code": "a",
+            "value": "All is fubar"
+          }]
         },
         "new": {
-          "code": "a",
-          "value": "All is foobar"
+          "tag": "245",
+          "subfields": [{
+            "code": "a",
+            "value": "All is foobar"
+          }]
         }
       }]
     }]
@@ -70,7 +76,7 @@ define(['marc-record-validate'], function(validationFactory, validator_foo, vali
 
 The configuration is passed as an object to the function returned by the factory. The following properties are supported:
 
-- **validators** *(array)*: An array of validator names or validator specification objects. The specified will be enabled. Defaults to empty (All validators enabled)
+- **validators** *(array)*: An array of validator names or validator specification objects. The specified validators will be enabled. Defaults to empty (All validators enabled)
 - **failOnError** *(boolean)*: Throw an error immediately if a validator return an error message. Defaults to true.
 - **fix** *(boolean)*: Whether to fix records which had any warnings (Returned by the validator). Defaults to false.
 
