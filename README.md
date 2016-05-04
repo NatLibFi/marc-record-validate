@@ -77,7 +77,7 @@ define(['marc-record-validate'], function(validationFactory, validator_foo, vali
 The configuration is passed as an object to the function returned by the factory. The following properties are supported:
 
 - **validators** *(array)*: An array of validator names or validator specification objects. The specified validators will be enabled. Defaults to empty (All validators enabled)
-- **failOnError** *(boolean)*: Throw an error immediately if a validator return an error message. Defaults to true.
+- **failOnError** *(boolean)*: Throw an error immediately if a validator returns an error message. Defaults to true.
 - **fix** *(boolean)*: Whether to fix records which had any warnings (Returned by the validator). Defaults to false.
 
 ## Development 
