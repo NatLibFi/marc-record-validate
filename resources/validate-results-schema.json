@@ -16,10 +16,7 @@
           "type": "string"
         },
         "fields": {
-          "type": "array",
-          "items": {
-            "type": "object"
-          }
+          "type": "object"
         }
       },
       "required": ["type", "message"]

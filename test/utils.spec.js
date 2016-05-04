@@ -32,14 +32,24 @@
   'use strict';
 
   if (typeof define === 'function' && define.amd) {
-    define(['chai/chai', '../lib/utils', 'marc-record-js'], factory);
+    define([
+      'chai/chai',
+      'simple-mock',
+      'marc-record-js',
+      '../lib/utils'
+    ], factory);
   } else if (typeof module === 'object' && module.exports) {
-    module.exports = factory(require('chai'), require('../lib/utils'), require('marc-record-js'));
+    module.exports = factory(
+      require('chai'),     
+      require('simple-mock'),
+      require('marc-record-js'),
+      require('../lib/utils')
+    );
   }
 
 }(this, factory));
 
-function factory(chai, utils, MarcRecord)
+function factory(chai, simple, MarcRecord, utils)
 {
 
   'use strict';
@@ -73,11 +83,11 @@ function factory(chai, utils, MarcRecord)
           });
         });
 
-        it('Should return the expected object with fields', function() {
-          expect(utils.validate.debug('foobar', ['foobar'])).to.eql({
+        it('Should return the expected object with a field', function() {
+          expect(utils.validate.debug('foobar', {})).to.eql({
             type: 'debug',
             message: 'foobar',
-            fields: ['foobar']
+            field: {}
           });
         });
 
@@ -92,11 +102,11 @@ function factory(chai, utils, MarcRecord)
           });
         });
 
-        it('Should return the expected object with fields', function() {
-          expect(utils.validate.info('foobar', ['foobar'])).to.eql({
+        it('Should return the expected object with a field', function() {
+          expect(utils.validate.info('foobar', {})).to.eql({
             type: 'info',
             message: 'foobar',
-            fields: ['foobar']
+            field: {}
           });
         });
 
@@ -111,11 +121,11 @@ function factory(chai, utils, MarcRecord)
           });
         });
 
-        it('Should return the expected object with fields', function() {
-          expect(utils.validate.warning('foobar', ['foobar'])).to.eql({
+        it('Should return the expected object with a field', function() {
+          expect(utils.validate.warning('foobar', {})).to.eql({
             type: 'warning',
             message: 'foobar',
-            fields: ['foobar']
+            field: {}
           });
         });
 
@@ -130,11 +140,11 @@ function factory(chai, utils, MarcRecord)
           });
         });
 
-        it('Should return the expected object with fields', function() {
-          expect(utils.validate.error('foobar', ['foobar'])).to.eql({
+        it('Should return the expected object with a field', function() {
+          expect(utils.validate.error('foobar', {})).to.eql({
             type: 'error',
             message: 'foobar',
-            fields: ['foobar']
+            field: {}
           });
         });
 
@@ -156,7 +166,8 @@ function factory(chai, utils, MarcRecord)
           .respondTo('addSubfield').and.to
           .respondTo('removeSubfield').and.to
           .respondTo('modifySubfieldCode').and.to
-          .respondTo('modifySubfieldValue');
+          .respondTo('modifySubfieldValue').and.to
+          .respondTo('modifySubfields');
       });
       
       describe('modifyLeader', function() {
@@ -285,6 +296,12 @@ function factory(chai, utils, MarcRecord)
     
     describe('addSubfield', function() {
 
+      it('Should throw because the field is not a variable field', function() {
+        expect(function() {
+          utils.fix.addSubfield({});
+        }).to.throw(Error, /^Field is not a variable field$/);
+      });
+
       it('Should add the subfield and return the expected object', function() {
 
         var field = {
@@ -308,6 +325,12 @@ function factory(chai, utils, MarcRecord)
     });
     
     describe('removeSubfield', function() {
+
+      it('Should throw because the field is not a variable field', function() {
+        expect(function() {
+          utils.fix.removeSubfield({});
+        }).to.throw(Error, /^Field is not a variable field$/);
+      });
 
       it('Should remove the subfield and return the expected object', function() {
 
@@ -388,6 +411,73 @@ function factory(chai, utils, MarcRecord)
             value: 'fu'
           }]
         });
+
+      });
+
+    });
+
+    describe('modifySubfields', function() {
+
+      it('Should throw because the field is not a variable field', function() {
+        expect(function() {
+          utils.fix.modifySubfields({});
+        }).to.throw(Error, /^Field is not a variable field$/);
+      });
+
+      it('Should modify subfields and return the expected object', function() {
+
+        var spy_modify_callback = simple.spy(function(subfield) {
+          if (subfield.code[0] === 'f') {
+            subfield.code = 'fubar';
+            subfield.value = '0';
+          }
+        }),
+        field =  {
+          tag: 'foobar',
+          subfields: [
+            {
+              code: 'foo',
+              value: '1'
+            },
+            {
+              code: 'bar',
+              value: '2'
+            },
+            {
+              code: 'fu',
+              value: '3'
+            }
+          ]
+        },
+        field_original = JSON.parse(JSON.stringify(field));
+
+        expect(utils.fix.modifySubfields(field, spy_modify_callback)).to.eql({
+          'type': 'modifyField',
+          'old': field_original,
+          'new': field
+        });
+        expect(field).to.eql({
+          tag: 'foobar',
+          subfields: [
+            {
+              code: 'fubar',
+              value: '0'
+            },
+            {
+              code: 'bar',
+              value: '2'
+            },
+            {
+              code: 'fubar',
+              value: '0'
+            }
+          ]
+        });
+
+        expect(spy_modify_callback.callCount).to.equal(3);
+        expect(spy_modify_callback.calls[0].args[0]).to.eql(field.subfields[0]);
+        expect(spy_modify_callback.calls[1].args[0]).to.eql(field.subfields[1]);
+        expect(spy_modify_callback.calls[2].args[0]).to.eql(field.subfields[2]);
 
       });
 
