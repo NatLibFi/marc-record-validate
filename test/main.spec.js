@@ -141,13 +141,13 @@ function factory(chai, simple, MarcRecord, createFactory)
 
       describe('function', function() {
 
-        it('Should throw because record is not a prototype of MarcRecord', function() {
+        it('Should throw because record is not an instance of MarcRecord', function() {
           expect(createFactory([{
             name: 'foo',
             factory: simple.stub().returnWith({
               validate: simple.stub().returnWith([])
             })
-          }])()).to.throw(Error, /^Record is not a prototype of MarcRecord$/);
+          }])()).to.throw(Error, /^Not a valid MarcRecord instance$/);
         });
 
         it("Should throw because validate results don't validate against schema", function() {
@@ -195,8 +195,9 @@ function factory(chai, simple, MarcRecord, createFactory)
 
           expect(createFactory([
             {
-              name: 'foobar1',
+              name: 'foobar1',              
               factory: simple.stub().returnWith({
+                description: 'foobar',
                 validate: spy_validate1
               })
             },
@@ -212,6 +213,7 @@ function factory(chai, simple, MarcRecord, createFactory)
             failed: false,
             validators: [{
               name: 'foobar1',
+              description: 'foobar',
               validate: [{
                 type: 'warning',
                 message: 'foobar1'
