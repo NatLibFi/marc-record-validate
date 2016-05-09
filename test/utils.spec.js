@@ -170,9 +170,7 @@ function factory(chai, simple, MarcRecord, utils)
           .respondTo('modifySubfields');
       });
       
-      describe('modifyLeader', function() {
-
-
+      describe('#modifyLeader', function() {
 
         var record = new MarcRecord();
         
@@ -188,7 +186,7 @@ function factory(chai, simple, MarcRecord, utils)
       
     });
     
-    describe('addField', function() {
+    describe('#addField', function() {
 
       it('Should add the field and return the expected object', function() {
 
@@ -211,7 +209,7 @@ function factory(chai, simple, MarcRecord, utils)
 
     });
 
-    describe('removeField', function() {
+    describe('#removeField', function() {
 
       it('Should remove the field and return the expected object', function() {
 
@@ -234,8 +232,100 @@ function factory(chai, simple, MarcRecord, utils)
       });
 
     });
+
+    describe('#moveField', function() {
+
+      it('Should move a field to a lower index', function() {
+
+        var record_original,
+        field = {
+          tag: '500',
+          subfields: [{
+            a: 'fubar'
+          }]
+        },
+        record = new MarcRecord({
+          fields: [
+            {
+              tag: '500',
+              subfields: [{
+                code: 'a',
+                value: 'foo'
+              }]
+            },
+            {
+              tag: '500',
+              subfields: [{
+                code: 'a',
+                value: 'bar'
+              }]
+            }
+          ]
+        });
+
+        record.fields.push(field);
+        record_original = record.toJsonObject();
+
+        expect(utils.fix.moveField(record, field, 0)).to.eql({
+          'type': 'moveField',
+          'field': field,
+          'old': 2,
+          'new': 0
+        });
+
+        expect(record.toJsonObject()).to.not.eql(record_original);
+        expect(record.fields.length).to.equal(record_original.fields.length);
+        expect(record.fields.indexOf(field)).to.equal(0);
+        
+      });
+
+      it('Should move a field to a higher index', function() {
+
+        var record_original,
+        field = {
+          tag: '500',
+          subfields: [{
+            a: 'fubar'
+          }]
+        },
+        record = new MarcRecord({
+          fields: [
+            {
+              tag: '500',
+              subfields: [{
+                code: 'a',
+                value: 'foo'
+              }]
+            },
+            {
+              tag: '500',
+              subfields: [{
+                code: 'a',
+                value: 'bar'
+              }]
+            }
+          ]
+        });
+
+        record.fields = [record.fields[0], field, record.fields[1]];
+        record_original = record.toJsonObject();
+
+        expect(utils.fix.moveField(record, field, 3)).to.eql({
+          'type': 'moveField',
+          'field': field,
+          'old': 1,
+          'new': 3
+        });
+
+        expect(record.toJsonObject()).to.not.eql(record_original);
+        expect(record.fields.length).to.equal(record_original.fields.length);
+        expect(record.fields.indexOf(field)).to.equal(2);
+
+      });
+
+    });
     
-    describe('modifyFieldTag', function() {
+    describe('#modifyFieldTag', function() {
 
       it("Should modify the field's tag and return the expected object", function() {
 
@@ -258,7 +348,7 @@ function factory(chai, simple, MarcRecord, utils)
 
     });
     
-    describe('modifyFieldValue', function() {
+    describe('#modifyFieldValue', function() {
 
       it('Should throw because the field is not a data field', function() {       
         expect(function() {
@@ -294,7 +384,7 @@ function factory(chai, simple, MarcRecord, utils)
 
     });
     
-    describe('addSubfield', function() {
+    describe('#addSubfield', function() {
 
       it('Should throw because the field is not a variable field', function() {
         expect(function() {
@@ -324,7 +414,7 @@ function factory(chai, simple, MarcRecord, utils)
 
     });
     
-    describe('removeSubfield', function() {
+    describe('#removeSubfield', function() {
 
       it('Should throw because the field is not a variable field', function() {
         expect(function() {
@@ -354,7 +444,7 @@ function factory(chai, simple, MarcRecord, utils)
 
     });
     
-    describe('modifySubfieldCode', function() {
+    describe('#modifySubfieldCode', function() {
 
       it("Should modify the subfield's code and return the expected object", function() {
 
@@ -385,7 +475,7 @@ function factory(chai, simple, MarcRecord, utils)
 
     });
     
-    describe('modifySubfieldValue', function() {
+    describe('#modifySubfieldValue', function() {
 
       it("Should modify the subfield's value and return the expected object", function() {
 
@@ -416,7 +506,7 @@ function factory(chai, simple, MarcRecord, utils)
 
     });
 
-    describe('modifySubfields', function() {
+    describe('#modifySubfields', function() {
 
       it('Should throw because the field is not a variable field', function() {
         expect(function() {

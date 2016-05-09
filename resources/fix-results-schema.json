@@ -65,6 +65,25 @@
           "properties": {
             "type": {
               "type": "string",
+              "pattern": "^moveField$"
+            },
+            "field": {
+              "type": "object"
+            },
+            "old": {
+              "type": "number"
+            },
+            "new": {
+              "type": "number"
+            }
+          },
+          "required": ["type", "field", "old", "new"]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "type": {
+              "type": "string",
               "pattern": "^addSubfield$"
             },
             "field": {
