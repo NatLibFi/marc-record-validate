@@ -34,14 +34,18 @@
   if (typeof define === 'function' && define.amd) {
     define([
       'chai/chai',
+      'chai-as-promised',
       'simple-mock',
+      'es6-polyfills/lib/polyfills/promise',
       'marc-record-js',
       '../lib/main'
     ], factory);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(
       require('chai'),
+      require('chai-as-promised'),
       require('simple-mock'),
+      require('es6-polyfills/lib/polyfills/promise'),
       require('marc-record-js'),
       require('../lib/main')
     );
@@ -49,12 +53,16 @@
 
 }(this, factory));
 
-function factory(chai, simple, MarcRecord, createFactory)
+function factory(chai, chaiAsPromised, simple, Promise, MarcRecord, createFactory)
 {
 
   'use strict';
 
   var expect = chai.expect;
+
+  simple.Promise = Promise;
+
+  chai.use(chaiAsPromised);
 
   describe('validate', function() {
 
@@ -141,59 +149,61 @@ function factory(chai, simple, MarcRecord, createFactory)
 
       describe('function', function() {
 
-        it('Should throw because record is not an instance of MarcRecord', function() {
-          expect(createFactory([{
+        it('Should reject because record is not an instance of MarcRecord', function() {
+          return expect(createFactory([{
             name: 'foo',
             factory: simple.stub().returnWith({
               validate: simple.stub().returnWith([])
             })
-          }])()).to.throw(Error, /^Not a valid MarcRecord instance$/);
+          }])()()).to.be.rejectedWith(Error, /^Error: Not a valid MarcRecord instance$/);
         });
 
         it("Should throw because validate results don't validate against schema", function() {
-          expect(function() {
-            createFactory([{
-              name: 'foo',
-              factory: simple.stub().returnWith({
-                validate: simple.stub().returnWith()
-              })
-            }])()(new MarcRecord());
-          }).to.throw(Error, /^Validating validate results failed: /);
+          return expect(createFactory([{
+            name: 'foo',
+            factory: simple.stub().returnWith({
+              validate: simple.stub().resolveWith()
+            })
+          }])()(new MarcRecord())).to.be.rejectedWith(Error, /^Error: Validating validate results failed: /);
         });
 
         it('Should run all validators and return no messages for validation', function() {
           
-          var spy_validate = simple.spy().returnWith([]);
+          var spy_validate = simple.spy().resolveWith([]);
 
-          expect(createFactory([{
+          return createFactory([{
             name: 'foo',
             factory: simple.stub().returnWith({
               validate: spy_validate
             })
-          }])()(new MarcRecord())).to.eql({
-            failed: false,
-            validators: [{
-              name: 'foo',
-              validate: []
-            }]
-          });
+          }])()(new MarcRecord()).then(function(results) {
 
-          expect(spy_validate.callCount).to.equal(1);
+            expect(results).to.eql({
+              failed: false,
+              validators: [{
+                name: 'foo',
+                validate: []
+              }]
+            });
+
+            expect(spy_validate.callCount).to.equal(1);
+
+          });
 
         });
         
         it('Should run some validators and return only warning messages', function() {
 
-          var spy_validate1 = simple.spy().returnWith([{
+          var spy_validate1 = simple.spy().resolveWith([{
             type: 'warning',
             message: 'foobar1'
           }]),
-          spy_validate2 = simple.spy().returnWith([{
+          spy_validate2 = simple.spy().resolveWith([{
             type: 'error',
             message: 'foobar2'
           }]);
 
-          expect(createFactory([
+          return createFactory([
             {
               name: 'foobar1',              
               factory: simple.stub().returnWith({
@@ -209,40 +219,43 @@ function factory(chai, simple, MarcRecord, createFactory)
             },
           ])({
             validators: ['foobar1']
-          })(new MarcRecord())).to.eql({
-            failed: false,
-            validators: [{
-              name: 'foobar1',
-              description: 'foobar',
-              validate: [{
-                type: 'warning',
-                message: 'foobar1'
-              }]
-            }]
-          });
+          })(new MarcRecord()).then(function(results) {
 
-          expect(spy_validate1.callCount).to.equal(1);
-          expect(spy_validate2.callCount).to.equal(0);
+            expect(results).to.eql({
+              failed: false,
+              validators: [{
+                name: 'foobar1',
+                description: 'foobar',
+                validate: [{
+                  type: 'warning',
+                  message: 'foobar1'
+                }]
+              }]
+            });
+
+            expect(spy_validate1.callCount).to.equal(1);
+            expect(spy_validate2.callCount).to.equal(0);
+
+          });
 
         });
 
         it('Should run validators and fail because of error messages', function() {
 
-          var spy_validate1 = simple.spy().returnWith([{
+          var spy_validate1 = simple.spy().resolveWith([{
             type: 'warning',
             message: 'foobar1'
           }]),
-          spy_validate2 = simple.spy().returnWith([{
+          spy_validate2 = simple.spy().resolveWith([{
             type: 'error',
             message: 'foobar2'
           }]),
-          spy_validate3 = simple.spy().returnWith([{
+          spy_validate3 = simple.spy().resolveWith([{
             type: 'info',
             message: 'foobar3'
           }]);
 
-
-          expect(createFactory([
+          return createFactory([
             {
               name: 'foobar1',
               factory: simple.stub().returnWith({
@@ -261,48 +274,52 @@ function factory(chai, simple, MarcRecord, createFactory)
                 validate: spy_validate3
               })
             },
-          ])()(new MarcRecord())).to.eql({
-            failed: true,
-            validators: [
-              {
-                name: 'foobar1',
-                validate: [{
-                  type: 'warning',
-                  message: 'foobar1'
-                }]
-              },
-              {
-                name: 'foobar2',
-                validate: [{
-                  type: 'error',
-                  message: 'foobar2'
-                }]
-              }
-            ]
-          });
+          ])()(new MarcRecord()).then(function(results) {
+
+            expect(results).to.eql({
+              failed: true,
+              validators: [
+                {
+                  name: 'foobar1',
+                  validate: [{
+                    type: 'warning',
+                    message: 'foobar1'
+                  }]
+                },
+                {
+                  name: 'foobar2',
+                  validate: [{
+                    type: 'error',
+                    message: 'foobar2'
+                  }]
+                }
+              ]
+            });
           
-          expect(spy_validate1.callCount).to.equal(1);
-          expect(spy_validate2.callCount).to.equal(1);
-          expect(spy_validate3.callCount).to.equal(0);
+            expect(spy_validate1.callCount).to.equal(1);
+            expect(spy_validate2.callCount).to.equal(1);
+            expect(spy_validate3.callCount).to.equal(0);
+
+          });
 
         });
 
         it('Should run validators and not fail because failOnError is false', function() {
 
-          var spy_validate1 = simple.spy().returnWith([{
+          var spy_validate1 = simple.spy().resolveWith([{
             type: 'warning',
             message: 'foobar1'
           }]),
-          spy_validate2 = simple.spy().returnWith([{
+          spy_validate2 = simple.spy().resolveWith([{
             type: 'error',
             message: 'foobar2'
           }]),
-          spy_validate3 = simple.spy().returnWith([{
+          spy_validate3 = simple.spy().resolveWith([{
             type: 'info',
             message: 'foobar3'
           }]);
 
-          expect(createFactory([
+          return createFactory([
             {
               name: 'foobar1',
               factory: simple.stub().returnWith({
@@ -323,54 +340,58 @@ function factory(chai, simple, MarcRecord, createFactory)
             },
           ])({
             failOnError: false
-          })(new MarcRecord())).to.eql({
-            failed: false,
-            validators: [
-              {
-                name: 'foobar1',
-                validate: [{
-                  type: 'warning',
-                  message: 'foobar1'
-                }]
-              },
-              {
-                name: 'foobar2',
-                validate: [{
-                  type: 'error',
-                  message: 'foobar2'
-                }]
-              },
-              {
-                name: 'foobar3',
-                validate: [{
-                  type: 'info',
-                  message: 'foobar3'
-                }]
-              }
-            ]
+          })(new MarcRecord()).then(function(results) {
+
+            expect(results).to.eql({
+              failed: false,
+              validators: [
+                {
+                  name: 'foobar1',
+                  validate: [{
+                    type: 'warning',
+                    message: 'foobar1'
+                  }]
+                },
+                {
+                  name: 'foobar2',
+                  validate: [{
+                    type: 'error',
+                    message: 'foobar2'
+                  }]
+                },
+                {
+                  name: 'foobar3',
+                  validate: [{
+                    type: 'info',
+                    message: 'foobar3'
+                  }]
+                }
+              ]
+            });
+            
+            expect(spy_validate1.callCount).to.equal(1);
+            expect(spy_validate2.callCount).to.equal(1);
+            expect(spy_validate3.callCount).to.equal(1);
+
           });
 
-          expect(spy_validate1.callCount).to.equal(1);
-          expect(spy_validate2.callCount).to.equal(1);
-          expect(spy_validate3.callCount).to.equal(1);
-
         });
+        
+        it("Should be rejected because fix results don't validate against schema", function() {
 
-        it("Should throw because fix results don't validate against schema", function() {
-          expect(function() {
-            createFactory([{
-              name: 'foobar',
-              factory: simple.stub().returnWith({
-                fix: simple.stub(),
-                validate: simple.stub().returnWith([{
-                  type: 'warning',
-                  message: 'foobar'
-                }])
-              })
-            }])({
-              fix: true
-            })(new MarcRecord());
-          }).to.throw(Error, /^Validating fix results failed: /);
+          return expect(createFactory([{
+            name: 'foobar',
+            factory: simple.stub().returnWith({
+              fix: simple.stub().resolveWith(),
+              validate: simple.stub().resolveWith([{
+                type: 'warning',
+                message: 'foobar'
+              }])
+            })
+          }])({
+            fix: true
+          })(new MarcRecord())).to.be.rejectedWith(Error, /^Error: Validating fix results failed: /);
+
         });
 
         it('Should run validators and fix the record because fix is true', function() {
@@ -382,7 +403,7 @@ function factory(chai, simple, MarcRecord, createFactory)
               value: 'foo'
             }]
           }),
-          spy_validate = simple.spy().returnWith([{
+          spy_validate = simple.spy().resolveWith([{
             type: 'warning',
             message: 'foobar'
           }]),
@@ -390,7 +411,7 @@ function factory(chai, simple, MarcRecord, createFactory)
 
             rec.fields[0].value = 'fu';
 
-            return [{
+            return Promise.resolve([{
               'type': 'modifyField',
               'old': {
                 tag: 'bar',
@@ -400,11 +421,11 @@ function factory(chai, simple, MarcRecord, createFactory)
                 tag: 'bar',
                 value: 'fu'
               }
-            }];
+            }]);
 
           });
 
-          expect(createFactory([{
+          return createFactory([{
             name: 'foobar',
             factory: simple.stub().returnWith({
               validate: spy_validate,
@@ -412,36 +433,40 @@ function factory(chai, simple, MarcRecord, createFactory)
             })
           }])({
             fix: true
-          })(record)).to.eql({
-            failed: false,
-            validators: [{
-              name: 'foobar',
-              validate: [{
-                type: 'warning',
-                message: 'foobar'
-              }],
-              fix: [{
-                'type': 'modifyField',
-                'old': {
-                  tag: 'bar',
-                  value: 'foo'
-                },
-                'new': {
-                  tag: 'bar',
-                  value: 'fu'
-                }
+          })(record).then(function(results) {
+
+            expect(results).to.eql({
+              failed: false,
+              validators: [{
+                name: 'foobar',
+                validate: [{
+                  type: 'warning',
+                  message: 'foobar'
+                }],
+                fix: [{
+                  'type': 'modifyField',
+                  'old': {
+                    tag: 'bar',
+                    value: 'foo'
+                  },
+                  'new': {
+                    tag: 'bar',
+                    value: 'fu'
+                  }
+                }]
               }]
-            }]
-          });
-          
-          expect(spy_validate.callCount).to.equal(1);
-          expect(spy_fix.callCount).to.equal(1);
-          expect(record.toJsonObject()).to.eql({
-            leader: '',
-            fields: [{
-              tag: 'bar',
-              value: 'fu'
-            }]
+            });
+            
+            expect(spy_validate.callCount).to.equal(1);
+            expect(spy_fix.callCount).to.equal(1);
+            expect(record.toJsonObject()).to.eql({
+              leader: '',
+              fields: [{
+                tag: 'bar',
+                value: 'fu'
+              }]
+            });
+            
           });
 
         });

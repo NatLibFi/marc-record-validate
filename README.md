@@ -8,9 +8,9 @@ See the [wiki](https://github.com/NatLibFi/marc-record-validate/wiki/Writing-val
 
 ## Usage
 
-When the validate function is called on a MARC record (Implemented by [marc-record-js](https://github.com/petuomin/marc-record-js)) each enabled validator is run to provide information about the record's validity. The validators can also fix warnings returned by the validator, if enabled.
+When the validate function is called on a MARC record (Implemented by [marc-record-js](https://github.com/petuomin/marc-record-js)) each enabled validator is ran to provide information about the record's validity. The validators can also fix warnings returned by the validator, if enabled.
 
-The function returns an object which contains the validator messages and fix modifications:
+The function resolves (Using a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)) with an object which contains the validator messages and fix modifications:
 
 ```js
 {
@@ -55,7 +55,10 @@ validate = require('marc-record-validate')([
   require('foobar/lib/validators/foo'),
   require('foobar/lib/validators/bar'),
 ])(config),
-results = validate(record);
+
+return validate(record).then(function(results) {
+  // Do something with results
+});
 
 ```
 
@@ -66,8 +69,11 @@ define(['marc-record-validate'], function(validationFactory, validator_foo, vali
   var validate = validationFactory([
     validator_foo,
     validator_bar
-  ])(config),
-  results = validate(record);
+  ])(config);
+
+  return validate(record).then(function(results) {
+    // Do something with results
+  });
 
 });
 ```

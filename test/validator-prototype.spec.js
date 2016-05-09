@@ -34,26 +34,30 @@
   if (typeof define === 'function' && define.amd) {
     define([
       'chai/chai',
+      'chai-as-promised',
       '../lib/validator-prototype'
     ], factory);
   } else if (typeof module === 'object' && module.exports) {
     module.exports = factory(
       require('chai'),
+      require('chai-as-promised'),
       require('../lib/validator-prototype')
     );
   }
 
 }(this, factory));
 
-function factory(chai, validator_factory)
+function factory(chai, chaiAsPromised, validator_factory)
 {
 
   'use strict';
 
   var expect = chai.expect;
 
+  chai.use(chaiAsPromised);
+
   describe('validator-prototype', function() {
-    
+
     it('Should be the expected object', function() {
       expect(validator_factory).to.be.an('object');
       expect(validator_factory.name).to.be.a('string');
@@ -76,16 +80,16 @@ function factory(chai, validator_factory)
         
         describe('#validate', function() {
           
-          it('Should return an array', function() {
-            expect(validator_factory.factory().validate()).to.be.an('array');
+          it('Should resolve with an array', function() {
+            return expect(validator_factory.factory().validate()).to.eventually.be.an('array');
           });
           
         });
         
         describe('#fix', function() {
           
-          it('Should return an array', function() {
-            expect(validator_factory.factory().fix()).to.be.an('array');
+          it('Should resolve with an array', function() {
+            expect(validator_factory.factory().fix()).to.eventually.be.an('array');
           });
           
         });
