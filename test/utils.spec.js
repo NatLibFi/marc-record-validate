@@ -314,7 +314,7 @@ function factory(chai, simple, MarcRecord, utils)
           'type': 'moveField',
           'field': field,
           'old': 1,
-          'new': 3
+          'new': 2
         });
 
         expect(record.toJsonObject()).to.not.eql(record_original);
