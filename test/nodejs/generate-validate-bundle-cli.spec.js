@@ -59,6 +59,20 @@
 
     });
 
+    it('Should print usage instructions to stderr as explicitly requested', function() {
+
+      var stderr;
+
+      expect(cli('foobar', ['--help'], { 
+        error: function(message) {
+          stderr = message;
+        }
+      })).to.equal(-1);
+
+      expect(stderr).to.match(/^USAGE: foobar/);
+
+    });
+
     it('Should succesfully write output to a file', function() {
 
       var fixture = fs.readFileSync('test/nodejs/fixtures/output_empty.txt', {encoding: 'utf8'});
@@ -85,7 +99,27 @@
         }
       });
 
-      expect(cli(undefined, ['foo/bar', '-d', 'fu'])).to.equal(undefined);      
+      expect(cli(undefined, ['foo/bar', '-d', 'fu'], new console.Console(process.stdout, process.stderr))).to.equal(undefined);      
+      expect(fs.readFileSync('foo/bar', {encoding: 'utf8'})).to.equal(fixture);
+
+    });
+
+    it('Should attempt to find the files recursively', function() {
+
+      var fixture = fs.readFileSync('test/nodejs/fixtures/output_recursive.txt', {encoding: 'utf8'});
+
+      mock_fs({
+        foo: {},
+        fu: {          
+          'foo.js': '',
+          'bar.js': '',
+          'bar': {
+            'fubar.js': ''
+          }
+        }
+      });
+
+      expect(cli(undefined, ['foo/bar', '-d', 'fu', '--recursive'], new console.Console(process.stdout, process.stderr))).to.equal(undefined);      
       expect(fs.readFileSync('foo/bar', {encoding: 'utf8'})).to.equal(fixture);
 
     });
@@ -113,6 +147,46 @@
 
       expect(cli(undefined, ['foo', '-h', 'bar'])).to.equal(undefined);
       expect(fs.readFileSync('foo', {encoding: 'utf8'})).to.equal(fixture);
+
+    });
+
+    it('Should throw because attempting to use filter without using recursive', function() {
+
+      var stderr;
+      
+      expect(cli('foobar', ['--filter', 'foobar'], { 
+        error: function(message) {
+          stderr = message;
+        }
+      })).to.equal(-1);
+
+      expect(stderr).to.match(/^USAGE: foobar/);
+
+    });
+
+    it('Should use filter', function() {
+
+      var fixture = fs.readFileSync('test/nodejs/fixtures/output_filter.txt', {encoding: 'utf8'});
+      
+      mock_fs({
+        foo: {},
+        fu: {          
+          'foo.js': '',
+          'bar.js': '',
+          'bar': {
+            'fubar.js': ''
+          },
+          'nodejs': {
+            'fubar.js': ''
+          },
+          'browser': {
+            'fubar.js': ''
+          }
+        }
+      });
+      
+      expect(cli(undefined, ['foo/bar', '--filter', '--recursive', '-d', 'fu'])).to.equal(undefined);
+      expect(fs.readFileSync('foo/bar', {encoding: 'utf8'})).to.equal(fixture);
 
     });
 
