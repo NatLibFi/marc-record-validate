@@ -161,6 +161,7 @@ function factory(chai, simple, MarcRecord, utils)
           .respondTo('removeField').and.to
           .respondTo('modifyFieldTag').and.to
           .respondTo('modifyFieldValue').and.to
+          .respondTo('modifyFieldIndicator').and.to
           .respondTo('addSubfield').and.to
           .respondTo('removeSubfield').and.to
           .respondTo('addSubfield').and.to
@@ -380,6 +381,41 @@ function factory(chai, simple, MarcRecord, utils)
           value: 'fu'
         });
 
+      });
+
+    });
+
+    describe('#modifyFieldIndicator', function() {
+
+      it('Should throw because indicator number is invalid', function() {
+        expect(function() {
+          utils.fix.modifyFieldIndicator({}, 3);
+        }).to.throw(Error, /^Invalid indicator number: 3$/);
+      });
+
+      it('Should modify the indicator and return the expected object', function() {
+
+        var field = {
+          tag: 'foo',
+          ind1: '0',
+          ind2: '1',
+          value: 'bar'
+        },
+        field_modified = {
+          tag: 'foo',
+          ind1: '0',
+          ind2: '2',
+          value: 'bar'
+        },
+        field_original = JSON.parse(JSON.stringify(field));
+        
+        expect(utils.fix.modifyFieldIndicator(field, 2, '2')).to.eql({
+          type: 'modifyField',
+          'old': field_original,
+          'new': field_modified
+        });
+        expect(field).to.eql(field_modified);
+        
       });
 
     });
