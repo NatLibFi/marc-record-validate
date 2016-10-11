@@ -70,12 +70,6 @@ function factory(chai, chaiAsPromised, simple, Promise, MarcRecord, createFactor
       expect(createFactory).to.be.a('function');
     });
 
-    it('Should throw because of an invalid validator factory', function() {
-      expect(function() {
-        createFactory([{}]);
-      }).to.throw(Error, /^Invalid validator factory object at index 0$/);
-    });
-
     it('Should return a function', function() {
       expect(createFactory([{
         name: 'foobar',
@@ -84,17 +78,6 @@ function factory(chai, chaiAsPromised, simple, Promise, MarcRecord, createFactor
     });
 
     describe('factory', function() {
-
-      it("Should throw because configuration doesn't validate against schema", function() {
-        expect(function() {
-          createFactory([{
-            name: 'foobar',
-            factory: simple.stub()
-          }])({
-            validators: 'foobar'
-          });
-        }).to.throw(Error, /VALIDATION_INVALID_TYPE/);
-      });
 
       it('Should throw because of an invalid validator', function() {
         expect(createFactory([{
@@ -156,15 +139,6 @@ function factory(chai, chaiAsPromised, simple, Promise, MarcRecord, createFactor
               validate: simple.stub().returnWith([])
             })
           }])()()).to.be.rejectedWith(Error, /^Error: Not a valid MarcRecord instance$/);
-        });
-
-        it("Should throw because validate results don't validate against schema", function() {
-          return expect(createFactory([{
-            name: 'foo',
-            factory: simple.stub().returnWith({
-              validate: simple.stub().resolveWith()
-            })
-          }])()(new MarcRecord())).to.be.rejectedWith(Error, /^Error: Validating validate results failed: /);
         });
 
         it('Should run all validators and return no messages for validation', function() {
@@ -377,23 +351,6 @@ function factory(chai, chaiAsPromised, simple, Promise, MarcRecord, createFactor
 
         });
         
-        it("Should be rejected because fix results don't validate against schema", function() {
-
-          return expect(createFactory([{
-            name: 'foobar',
-            factory: simple.stub().returnWith({
-              fix: simple.stub().resolveWith(),
-              validate: simple.stub().resolveWith([{
-                type: 'warning',
-                message: 'foobar'
-              }])
-            })
-          }])({
-            fix: true
-          })(new MarcRecord())).to.be.rejectedWith(Error, /^Error: Validating fix results failed: /);
-
-        });
-
         it('Should run validators and fix the record because fix is true', function() {
           
           var record = new MarcRecord({
