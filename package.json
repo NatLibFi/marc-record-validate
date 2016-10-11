@@ -44,7 +44,6 @@
     "marc-record-js": "^0.1.1",
     "es6-polyfills": "^1.0.1",
     "es6-shims": "^1.1.0",
-    "requirejs-plugins": "^1.0.2",
     "cli-args": "^1.2.1",
     "cli-wrap": "https://github.com/NatLibFi/cli-wrap"
   },
