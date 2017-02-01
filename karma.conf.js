@@ -20,10 +20,6 @@ module.exports = function(config) {
         included: false
       },
       {
-        pattern: 'resources/**/*.json',
-        included: false
-      },
-      {
         pattern: 'lib/**/*.js',
         included: false
       },
