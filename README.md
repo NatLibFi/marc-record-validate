@@ -1,7 +1,5 @@
 # MARC record validation [![NPM Version](https://img.shields.io/npm/v/marc-record-validate.svg)](https://npmjs.org/package/marc-record-validate) [![Build Status](https://travis-ci.org/NatLibFi/marc-record-validate.svg)](https://travis-ci.org/NatLibFi/marc-record-validate) [![Test Coverage](https://codeclimate.com/github/NatLibFi/marc-record-validate/badges/coverage.svg)](https://codeclimate.com/github/NatLibFi/marc-record-validate/coverage)
 
-**IN DEVELOPMENT**
-
 This project contains the software to run MARC validators. For the actual validators, see [marc-record-validators-melinda](https://github.com/natlibfi/marc-record-validators-melinda).
 
 See the [wiki](https://github.com/NatLibFi/marc-record-validate/wiki/Writing-validators) on how to write validators.
