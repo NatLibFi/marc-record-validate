@@ -93,7 +93,7 @@ function factory(chai, chaiAsPromised, simple, Promise, MarcRecord, createFactor
           });
         }).to.throw(Error, /^Validator 'foo' cannot be found$/);
       });
-
+      
       it('Should return a function', function() {
 
         var spy_factory = simple.spy().returnWith({
@@ -109,12 +109,12 @@ function factory(chai, chaiAsPromised, simple, Promise, MarcRecord, createFactor
 
       });
 
-      it('Should return a function (Validator instantiated with options)', function() {
+      it('Should throw because of invalid validator factory', function() {
 
         var spy_factory = simple.spy().returnWith({
           validate: simple.stub().returnWith([])
         });
-
+        
         expect(createFactory([{
           name: 'foo',
           factory: spy_factory
@@ -128,6 +128,20 @@ function factory(chai, chaiAsPromised, simple, Promise, MarcRecord, createFactor
         expect(spy_factory.called).to.be.ok/* jshint -W030 */;
         expect(spy_factory.calls[0].args[0]).to.equal('bar');
 
+      });
+      
+      it('Should return a function (Validator instantiated with options)', function() {
+        expect(function() {
+          createFactory([{
+            name: 1,
+            factory: 0
+          }])({
+            validators: [{
+              name: 'foo',
+              options: 'bar'
+            }]
+          });
+        }).to.throw(Error, /^Invalid validator factory object at index 0$/);
       });
 
       describe('function', function() {
