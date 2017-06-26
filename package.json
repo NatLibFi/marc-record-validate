@@ -23,8 +23,8 @@
     "type": "git",
     "url": "git@github.com:NatLibFi/marc-record-validate.git"
   },
-  "license": " AGPL-3.0+",
-  "version": "1.0.1",
+  "license": "AGPL-3.0+",
+  "version": "1.0.2",
   "main": "./lib/main",
   "bin": {
     "generate-validate-bundle": "./bin/generate-validate-bundle"
@@ -42,10 +42,10 @@
   },
   "dependencies": {
     "marc-record-js": "^0.1.1",
-    "es6-polyfills": "^1.0.1",
-    "es6-shims": "^1.1.0",
+    "es6-polyfills": "^2.0.0",
+    "es6-shims": "^2.0.0",
     "cli-args": "^1.2.1",
-    "cli-wrap": "https://github.com/NatLibFi/cli-wrap"
+    "cli-wrap": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
