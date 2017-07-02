@@ -1,5 +1,5 @@
 {
-  "name": "marc-record-validate",
+  "name": "@natlibfi/marc-record-validate",
   "description": "Validate and fix MARC records",
   "author": {
     "name": "The National Library of Finland"
@@ -24,7 +24,7 @@
     "url": "git@github.com:NatLibFi/marc-record-validate.git"
   },
   "license": "AGPL-3.0+",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "./lib/main",
   "bin": {
     "generate-validate-bundle": "./bin/generate-validate-bundle"
@@ -37,15 +37,15 @@
     "cover": "npm run test && istanbul check-coverage",
     "check": "npm run lint && npm run cover",
     "travisci": "npm run check",
-    "publish-to-npm": "npm install && npm run check && npm publish",
+    "publish-to-npm": "npm install && npm run check && npm publish --access=public",
     "generate-requirejs-config": "requirejs-configurator --npm -D -P > test/browser-main.js"
   },
   "dependencies": {
     "marc-record-js": "^0.1.1",
-    "es6-polyfills": "^2.0.0",
-    "es6-shims": "^2.0.0",
+    "@natlibfi/es6-polyfills": "^2.0.0",
+    "@natlibfi/es6-shims": "^2.0.0",
     "cli-args": "^1.2.1",
-    "cli-wrap": "^1.0.0"
+    "@natlibfi/cli-wrap": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",

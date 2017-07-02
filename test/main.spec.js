@@ -4,7 +4,7 @@
  *
  * Validate and fix MARC records
  *
- * Copyright (c) 2014-2016 University Of Helsinki (The National Library Of Finland)
+ * Copyright (c) 2014-2017 University Of Helsinki (The National Library Of Finland)
  *
  * This file is part of marc-record-validate
  *
@@ -36,7 +36,7 @@
       'chai/chai',
       'chai-as-promised',
       'simple-mock',
-      'es6-polyfills/lib/polyfills/promise',
+      '@natlibfi/es6-polyfills/lib/polyfills/promise',
       'marc-record-js',
       '../lib/main'
     ], factory);
@@ -45,7 +45,7 @@
       require('chai'),
       require('chai-as-promised'),
       require('simple-mock'),
-      require('es6-polyfills/lib/polyfills/promise'),
+      require('@natlibfi/es6-polyfills/lib/polyfills/promise'),
       require('marc-record-js'),
       require('../lib/main')
     );
