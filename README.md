@@ -1,107 +1,21 @@
-# MARC record validation [![NPM Version](https://img.shields.io/npm/v/@natlibfi/marc-record-validate.svg)](https://npmjs.org/package/@natlibfi/marc-record-validate) [![Build Status](https://travis-ci.org/NatLibFi/marc-record-validate.svg)](https://travis-ci.org/NatLibFi/marc-record-validate) [![Test Coverage](https://codeclimate.com/github/NatLibFi/marc-record-validate/badges/coverage.svg)](https://codeclimate.com/github/NatLibFi/marc-record-validate/coverage)
+# Validate and fix MARC records [![NPM Version](https://img.shields.io/npm/v/@natlibfi/marc-record-validate.svg)](https://npmjs.org/package/@natlibfi/marc-record-validate) [![Build Status](https://travis-ci.org/NatLibFi/marc-record-validate.svg)](https://travis-ci.org/NatLibFi/marc-record-validate) [![Test Coverage](https://codeclimate.com/github/NatLibFi/marc-record-validate/badges/coverage.svg)](https://codeclimate.com/github/NatLibFi/marc-record-validate/coverage)
 
-This project contains the software to run MARC validators. For the actual validators, see [marc-record-validators-melinda](https://github.com/natlibfi/marc-record-validators-melinda).
-
-See the [wiki](https://github.com/NatLibFi/marc-record-validate/wiki/Writing-validators) on how to write validators.
+Javascript module to validate and fix MARC records.
 
 ## Usage
-
-When the validate function is called on a MARC record (Implemented by [marc-record-js](https://github.com/petuomin/marc-record-js)) each enabled validator is ran to provide information about the record's validity. The validators can also fix warnings returned by the validator, if enabled.
-
-The function resolves (Using a [Promise](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise)) with an object which contains the validator messages and fix modifications:
-
 ```js
-{
-  "failed": false,
-  "validators": [{
-    "name": "foo",
-    "validate": [{
-      "tag": "245",
-      "messages": [{
-        "type": "warning",
-        "messages": "Has 'fu' instead of 'foo'"
-      }]  
-    }],
-    "fix": [{
-      "tag": "245",
-      "modifications": [{
-        "type": "modifyField",
-        "old": {
-          "tag": "245",
-          "subfields": [{
-            "code": "a",
-            "value": "All is fubar"
-          }]
-        },
-        "new": {
-          "tag": "245",
-          "subfields": [{
-            "code": "a",
-            "value": "All is foobar"
-          }]
-        }
-      }]
-    }]
-  }]
-}
+import validateFactory from '@natlibfi/marc-record-validate';
+const validate = validateFactory([someValidator]);
+const result = await validate(marcRecord);
 ```
-
-### Node.js
-
-```js
-validate = require('marc-record-validate')([
-  require('foobar/lib/validators/foo'),
-  require('foobar/lib/validators/bar'),
-])(config),
-
-return validate(record).then(function(results) {
-  // Do something with results
-});
-
-```
-
-### AMD
-```js
-define(['marc-record-validate'], function(validationFactory, validator_foo, validator_bar) {
-
-  var validate = validationFactory([
-    validator_foo,
-    validator_bar
-  ])(config);
-
-  return validate(record).then(function(results) {
-    // Do something with results
-  });
-
-});
-```
-
 ## Configuration
-
-The configuration is passed as an object to the function returned by the factory. The following properties are supported:
-
-- **validators** *(array)*: An array of validator names or validator specification objects. The specified validators will be enabled. Defaults to empty (All validators enabled)
-- **failOnError** *(boolean)*: Throw an error immediately if a validator returns an error message. Defaults to true.
-- **fix** *(boolean)*: Whether to fix records which had any warnings (Returned by the validator). Defaults to false.
-
-## Development 
-
-Clone the sources and install the package using `npm`:
-
-```sh
-npm install
-```
-
-Run the following NPM script to lint, test and check coverage of the code:
-
-```javascript
-
-npm run check
-
-```
+The module returns a factory function that takes an array [validators](https://github.com/NatLibFi/marc-record-validate/wiki/Writing-validators) as an argument. The factory creates a validate function that takes a [MARC record](https://www.npmjs.com/package/marc-record-js) instance and optional options as an object:
+- **fix**: Whether to run fix-method of the validator or not. Defaults to *false*
+- **failOnError**: Do not running remaining validators if the record does not validate (And cannot be fixed if **fix** is set to *true*). Defaults to *false*
+- **validateFixes**: Re-run validators after all validators have been processed. Only the validate-method will be called so that fixes are not applied twice. Defaults to *false*
 
 ## License and copyright
 
-Copyright (c) 2014-2016 **University Of Helsinki (The National Library Of Finland)**
+Copyright (c) 2014-2018 **University Of Helsinki (The National Library Of Finland)**
 
 This project's source code is licensed under the terms of **GNU Affero General Public License Version 3** or any later version.
