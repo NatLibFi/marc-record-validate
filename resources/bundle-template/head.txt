@@ -1,8 +1,0 @@
-/* istanbul ignore next: umd wrapper */
-(function (root, factory) {
-
-  'use strict';
-
-  if (typeof define === 'function' && define.amd) {
-    define([
-      'marc-record-validate'
