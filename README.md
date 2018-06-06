@@ -9,7 +9,7 @@ const validate = validateFactory([someValidator]);
 const result = await validate(marcRecord);
 ```
 ## Configuration
-The module returns a factory function that takes an array validators as an argument. The factory creates a validate function that takes a [MARC record](https://www.npmjs.com/package/marc-record-js) instance and optional options as an object:
+The module returns a factory function that takes an array of validators as an argument. The factory creates a validate function that takes a [MARC record](https://www.npmjs.com/package/marc-record-js) instance and optional options as an object:
 - **fix**: Whether to run fix-method of the validator or not. Defaults to *false*
 - **failOnError**: Do not running remaining validators if the record does not validate (And cannot be fixed if **fix** is set to *true*). Defaults to *false*
 - **validateFixes**: Re-run validators after all validators have been processed. Only the validate-method will be called so that fixes are not applied twice. Defaults to *false*
