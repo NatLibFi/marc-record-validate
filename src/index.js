@@ -28,7 +28,7 @@
 
 'use strict';
 
-import MarcRecord from 'marc-record-js';
+import {MarcRecord} from '@natlibfi/marc-record';
 
 export default function (validators = []) {
 	if (validators.length === 0) {

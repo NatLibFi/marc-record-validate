@@ -32,7 +32,7 @@
 
 import {expect} from 'chai';
 import sinon from 'sinon';
-import MarcRecord from 'marc-record-js';
+import {MarcRecord} from '@natlibfi/marc-record';
 import validateFactory from '../src';
 
 describe('index', () => {
@@ -57,6 +57,7 @@ describe('index', () => {
 		]);
 
 		expect(MarcRecord.isEqual(result.record, {
+			leader: '',
 			fields: [
 				{tag: 'FOO', value: 'foo'},
 				{tag: 'BAR', value: 'bar'}
@@ -114,6 +115,7 @@ describe('index', () => {
 		]);
 
 		expect(MarcRecord.isEqual(result.record, {
+			leader: '',
 			fields: [
 				{tag: 'FOO', value: 'foo'},
 				{tag: 'BAR', value: 'bar'}
