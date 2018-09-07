@@ -4,10 +4,12 @@ Javascript module to validate and fix MARC records.
 
 ## Usage
 ```js
-import {DoubleCommas} from '@natlibfi/marc-record-validators-melinda';
-import validateFactory from '@natlibfi/marc-record-validate';
-const validate = validateFactory([await DoubleCommas()]);
-const result = await validate(marcRecord);
+async function run() {
+  import {DoubleCommas} from '@natlibfi/marc-record-validators-melinda';
+  import validateFactory from '@natlibfi/marc-record-validate';
+  const validate = validateFactory([await DoubleCommas()]);
+  const result = await validate(marcRecord);
+}
 ```
 ## Configuration
 The module returns a factory function that takes an array of validators as an argument. The factory creates a validate function that takes a [MARC record](https://www.npmjs.com/package/@natlibfi/marc-record) instance and optional options as an object:
