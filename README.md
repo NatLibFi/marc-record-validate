@@ -4,9 +4,10 @@ Javascript module to validate and fix MARC records.
 
 ## Usage
 ```js
+import {DoubleCommas} from '@natlibfi/marc-record-validators-melinda';
+import validateFactory from '@natlibfi/marc-record-validate';
+
 async function run() {
-  import {DoubleCommas} from '@natlibfi/marc-record-validators-melinda';
-  import validateFactory from '@natlibfi/marc-record-validate';
   const validate = validateFactory([await DoubleCommas()]);
   const result = await validate(marcRecord);
 }
@@ -17,7 +18,7 @@ The module returns a factory function that takes an array of validators as an ar
 - **failOnError**: Do not running remaining validators if the record does not validate (And cannot be fixed if **fix** is set to *true*). Defaults to *false*
 - **validateFixes**: Re-run validators after all validators have been processed. Only the validate-method will be called so that fixes are not applied twice. Defaults to *false*
 ## Validators
-See [marc-record-validators-melinda](https://github.com/NatLibFi/marc-record-validators-melinda) for reference on how to write validators.
+See [marc-record-validators-melinda](https://github.com/NatLibFi/marc-record-validators-melinda/wiki) for reference on how to write validators.
 ## License and copyright
 
 Copyright (c) 2014-2018 **University Of Helsinki (The National Library Of Finland)**
