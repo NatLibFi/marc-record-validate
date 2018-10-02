@@ -28,7 +28,7 @@
 
 'use strict';
 
-// eslint-disable require-await
+/* eslint-disable require-await */
 
 import {MarcRecord} from '@natlibfi/marc-record';
 
