@@ -28,6 +28,8 @@
 
 'use strict';
 
+/* eslint-disable require-await */
+
 import {MarcRecord} from '@natlibfi/marc-record';
 
 export default function (validators = []) {

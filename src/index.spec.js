@@ -26,7 +26,7 @@
 *
 */
 
-/* eslint-disable no-unused-expressions */
+/* eslint-disable no-unused-expressions, require-await */
 
 'use strict';
 
@@ -56,13 +56,13 @@ describe('index', () => {
 			{description: 'foo', state: 'fixed', messages: undefined}
 		]);
 
-		expect(MarcRecord.isEqual(result.record, {
+		expect(result.record.toObject()).to.eql({
 			leader: '',
 			fields: [
 				{tag: 'FOO', value: 'foo'},
 				{tag: 'BAR', value: 'bar'}
 			]
-		})).to.be.true;
+		});
 	});
 
 	it('Should return after the first validator', async () => {
@@ -114,12 +114,12 @@ describe('index', () => {
 			{description: 'bar', state: 'fixed', messages: undefined}
 		]);
 
-		expect(MarcRecord.isEqual(result.record, {
+		expect(result.record.toObject()).to.eql({
 			leader: '',
 			fields: [
 				{tag: 'FOO', value: 'foo'},
 				{tag: 'BAR', value: 'bar'}
 			]
-		})).to.be.true;
+		});
 	});
 });

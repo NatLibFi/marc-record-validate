@@ -34,7 +34,7 @@
 		"publish-to-npm": "npm install && npm test && npm run coverage && npm publish --access=public"
 	},
 	"dependencies": {
-		"@natlibfi/marc-record": "^2.0.0"
+		"@natlibfi/marc-record": "^4.0.0"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
