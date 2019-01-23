@@ -13,7 +13,7 @@
 		"type": "git",
 		"url": "git@github.com:natlibfi/marc-record-validate.git"
 	},
-	"license": "AGPL-3.0+",
+	"license": "LGPL-3.0+",
 	"version": "4.0.0",
 	"main": "./dist/index.js",
 	"engines": {
