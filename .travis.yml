@@ -1,10 +1,15 @@
+
 language: node_js
 node_js:
-- node
-- '7'
+  - 'node'
+  - '8'
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
+install:
+- npm install
+scripts:
+- npm test
 after_script:
-- codeclimate-test-reporter < coverage/lcov.info
-addons:
-  code_climate:
-    repo_token:
-      secure: "AL8KqLLTClrU+aufbG/tiOmD9IQt0aWqjLfnh1tf6QHWlg4xEVaTA5Bsc6OZBxZrGE4xisP1vOKMqnvGzfcIaZPhHjVPalttH+PsfbYoHTFu8rDaDWIbxgsaIsCvQh9WMV6T0IgLcX8aUoNblo2OGTd6BbnwCspxpoQoNthz681OLCSj7ENRBEScOF8eyC8TIvKqQ+N10AmRyzAx2iNN4fxhLWNbKzymS7HHLP7jIMp//LsLBDurftLLILpqRS4fdTFb6BFu0w+EVgZACQTTjo9coZFtnryULuS+I827jzr8zY7tV9NBsu4wwfS6Pd5kvRIpTJM+aXNwFAKRUMvmxSccblHL2reE9Cr7OkBAAbfYCONwYe6WznUC7BO+vZG8P9r72iycb7ofqpnWjDxZUS/RTgZQrJPenykvzloEvEp8SfZGOX12dxgy6nGyYbBLglZ8Ja91+qgBadoe2Xjw1rNHSsWJqNCp1h9Xo7eANgRAAXLsvNYGDM8uBUoLS5pwWxtXPE82nXawe3IIVdSQfIOPaO2MK4ww5ZPFZcKbP0xprOd96roSHnZInkeIL2PjoojM93HojX3YmBeJVGzaRwZwwmrxNgVAx63/Z5YOfaCmxKb+ggOuH0B93ypVKUBscgB5kf9y678m0FofP4wKotFWDLjE/ylxWZvEkegYits="
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
