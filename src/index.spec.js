@@ -53,7 +53,7 @@ describe('index', () => {
 		expect(result).to.have.property('record');
 		expect(result).to.have.property('valid', true);
 		expect(result).to.have.deep.property('report', [
-			{description: 'foo', state: 'fixed', messages: undefined}
+			{description: 'foo', state: 'fixed'}
 		]);
 
 		expect(result.record.toObject()).to.eql({
@@ -83,7 +83,7 @@ describe('index', () => {
 		expect(result).to.have.property('record');
 		expect(result).to.have.property('valid', false);
 		expect(result).to.have.deep.property('report', [
-			{description: 'foo', state: 'invalid', messages: undefined}
+			{description: 'foo', state: 'invalid'}
 		]);
 
 		expect(MarcRecord.isEqual(record, result.record)).to.be.true;
@@ -110,8 +110,8 @@ describe('index', () => {
 		expect(result).to.have.property('record');
 		expect(result).to.have.property('valid', false);
 		expect(result).to.have.deep.property('report', [
-			{description: 'foo', state: 'invalid', messages: undefined},
-			{description: 'bar', state: 'fixed', messages: undefined}
+			{description: 'foo', state: 'invalid'},
+			{description: 'bar', state: 'fixed'}
 		]);
 
 		expect(result.record.toObject()).to.eql({

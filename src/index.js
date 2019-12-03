@@ -57,36 +57,32 @@ export default function (validators = []) {
 
 				if (validator) {
 					const {valid, messages} = await validator.validate(record);
+					const response = {
+						description: validator.description,
+						state: 'invalid',
+						messages
+					};
+
+					if (typeof (response.messages) === 'undefined') {
+						delete response.messages;
+					}
 
 					if (valid) {
-						return iterate(pendingValidators, results.concat({
-							description: validator.description,
-							state: 'valid'
-						}));
+						response.state = 'valid';
+						return iterate(pendingValidators, results.concat(response));
 					}
 
 					if (fix && validator.fix) {
 						await validator.fix(record);
-						return iterate(pendingValidators, results.concat({
-							description: validator.description,
-							state: 'fixed',
-							messages
-						}));
+						response.state = 'fixed';
+						return iterate(pendingValidators, results.concat(response));
 					}
 
 					if (failOnError) {
-						return results.concat({
-							description: validator.description,
-							state: 'invalid',
-							messages
-						});
+						return results.concat(response);
 					}
 
-					return iterate(pendingValidators, results.concat({
-						description: validator.description,
-						state: 'invalid',
-						messages
-					}));
+					return iterate(pendingValidators, results.concat(response));
 				}
 				return results;
 			}
@@ -97,28 +93,26 @@ export default function (validators = []) {
 
 				if (validator) {
 					const {valid, messages} = await validator.validate(record);
-
-					if (valid) {
-						return iterateValidate(pendingValidators, pendingResults, results.concat({
-							description: validator.description,
-							state: originalResult.state === 'fixed' ? 'fixed' : 'valid',
-							messages
-						}));
-					}
-
-					if (failOnError) {
-						return results.concat({
-							description: validator.description,
-							state: 'invalid',
-							messages
-						});
-					}
-
-					return iterateValidate(pendingValidators, pendingResults, results.concat({
+					const response = {
 						description: validator.description,
 						state: 'invalid',
 						messages
-					}));
+					};
+
+					if (typeof (response.messages) === 'undefined') {
+						delete response.messages;
+					}
+
+					if (valid) {
+						response.state = originalResult.state === 'fixed' ? 'fixed' : 'valid';
+						return iterateValidate(pendingValidators, pendingResults, results.concat(response));
+					}
+
+					if (failOnError) {
+						return results.concat(response);
+					}
+
+					return iterateValidate(pendingValidators, pendingResults, results.concat(response));
 				}
 				return results;
 			}
