@@ -52,20 +52,25 @@ export default function (validators = []) {
 				valid: results.every(r => r.state !== 'invalid')
 			};
 
+			function getResponse(validator, messages) {
+				const response = {
+					description: validator.description,
+					state: 'invalid'
+				};
+
+				if (typeof (messages) !== 'undefined') {
+					response.messages = messages;
+				}
+
+				return response;
+			}
+
 			async function iterate(pendingValidators, results = []) {
 				const validator = pendingValidators.shift();
 
 				if (validator) {
 					const {valid, messages} = await validator.validate(record);
-					const response = {
-						description: validator.description,
-						state: 'invalid',
-						messages
-					};
-
-					if (typeof (response.messages) === 'undefined') {
-						delete response.messages;
-					}
+					const response = getResponse(validator, messages);
 
 					if (valid) {
 						response.state = 'valid';
@@ -93,15 +98,7 @@ export default function (validators = []) {
 
 				if (validator) {
 					const {valid, messages} = await validator.validate(record);
-					const response = {
-						description: validator.description,
-						state: 'invalid',
-						messages
-					};
-
-					if (typeof (response.messages) === 'undefined') {
-						delete response.messages;
-					}
+					const response = getResponse(validator, messages);
 
 					if (valid) {
 						response.state = originalResult.state === 'fixed' ? 'fixed' : 'valid';
