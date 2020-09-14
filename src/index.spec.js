@@ -28,7 +28,6 @@
 
 /* eslint-disable no-unused-expressions, require-await */
 
-'use strict';
 
 import {expect} from 'chai';
 import sinon from 'sinon';
@@ -36,90 +35,86 @@ import {MarcRecord} from '@natlibfi/marc-record';
 import validateFactory from '../src';
 
 describe('index', () => {
-	it('Should throw and error because of undefined validators', () => {
-		expect(validateFactory).to.throw(Error, /^No validators provided$/);
-	});
+  it('Should throw and error because of undefined validators', () => {
+    expect(validateFactory).to.throw(Error, /^No validators provided$/u);
+  });
 
-	it('Should validate and fix a record', async () => {
-		const validator = {
-			description: 'foo',
-			validate: async () => ({valid: false}),
-			fix: async record => record.appendField({tag: 'BAR', value: 'bar'})
-		};
-		const validate = validateFactory([validator]);
-		const record = new MarcRecord({fields: [{tag: 'FOO', value: 'foo'}]});
-		const result = await validate(record, {fix: true});
+  it('Should validate and fix a record', async () => {
+    const validator = {
+      description: 'foo',
+      validate: async () => ({valid: false}),
+      fix: async record => record.appendField({tag: 'BAR', value: 'bar'})
+    };
+    const validate = validateFactory([validator]);
+    const record = new MarcRecord({fields: [{tag: 'FOO', value: 'foo'}]});
+    const result = await validate(record, {fix: true});
 
-		expect(result).to.have.property('record');
-		expect(result).to.have.property('valid', true);
-		expect(result).to.have.deep.property('report', [
-			{description: 'foo', state: 'fixed'}
-		]);
+    expect(result).to.have.property('record');
+    expect(result).to.have.property('valid', true);
+    expect(result).to.have.deep.property('report', [{description: 'foo', state: 'fixed'}]);
 
-		expect(result.record.toObject()).to.eql({
-			leader: '',
-			fields: [
-				{tag: 'FOO', value: 'foo'},
-				{tag: 'BAR', value: 'bar'}
-			]
-		});
-	});
+    expect(result.record.toObject()).to.eql({
+      leader: '',
+      fields: [
+        {tag: 'FOO', value: 'foo'},
+        {tag: 'BAR', value: 'bar'}
+      ]
+    });
+  });
 
-	it('Should return after the first validator', async () => {
-		const validator1 = {
-			description: 'foo',
-			validate: async () => ({valid: false})
-		};
-		const validator2 = {
-			description: 'bar',
-			validate: sinon.spy(async () => ({valid: true}))
-		};
-		const validate = validateFactory([validator1, validator2]);
-		const record = new MarcRecord({fields: [{tag: 'FOO', value: 'bar'}]});
-		const result = await validate(record, {failOnError: true});
+  it('Should return after the first validator', async () => {
+    const validator1 = {
+      description: 'foo',
+      validate: async () => ({valid: false})
+    };
+    const validator2 = {
+      description: 'bar',
+      validate: sinon.spy(async () => ({valid: true}))
+    };
+    const validate = validateFactory([validator1, validator2]);
+    const record = new MarcRecord({fields: [{tag: 'FOO', value: 'bar'}]});
+    const result = await validate(record, {failOnError: true});
 
-		expect(validator2.validate.called).to.be.false;
+    expect(validator2.validate.called).to.be.false;
 
-		expect(result).to.have.property('record');
-		expect(result).to.have.property('valid', false);
-		expect(result).to.have.deep.property('report', [
-			{description: 'foo', state: 'invalid'}
-		]);
+    expect(result).to.have.property('record');
+    expect(result).to.have.property('valid', false);
+    expect(result).to.have.deep.property('report', [{description: 'foo', state: 'invalid'}]);
 
-		expect(MarcRecord.isEqual(record, result.record)).to.be.true;
-	});
+    expect(MarcRecord.isEqual(record, result.record)).to.be.true;
+  });
 
-	it('Should validate the fixes', async () => {
-		const validator1 = {
-			description: 'foo',
-			fix: async record => record.appendField({tag: 'BAR', value: 'bar'}),
-			validate: async () => ({valid: false})
-		};
-		const validator2 = {
-			description: 'bar',
-			fix: async () => ({state: 'fixed'}),
-			validate: sinon.stub()
-				.onFirstCall().returns(Promise.resolve({valid: false}))
-				.onSecondCall().returns(Promise.resolve({valid: true}))
-		};
+  it('Should validate the fixes', async () => {
+    const validator1 = {
+      description: 'foo',
+      fix: async record => record.appendField({tag: 'BAR', value: 'bar'}),
+      validate: async () => ({valid: false})
+    };
+    const validator2 = {
+      description: 'bar',
+      fix: async () => ({state: 'fixed'}),
+      validate: sinon.stub()
+        .onFirstCall().returns(Promise.resolve({valid: false}))
+        .onSecondCall().returns(Promise.resolve({valid: true}))
+    };
 
-		const validate = validateFactory([validator1, validator2]);
-		const record = new MarcRecord({fields: [{tag: 'FOO', value: 'foo'}]});
-		const result = await validate(record, {fix: true, validateFixes: true});
+    const validate = validateFactory([validator1, validator2]);
+    const record = new MarcRecord({fields: [{tag: 'FOO', value: 'foo'}]});
+    const result = await validate(record, {fix: true, validateFixes: true});
 
-		expect(result).to.have.property('record');
-		expect(result).to.have.property('valid', false);
-		expect(result).to.have.deep.property('report', [
-			{description: 'foo', state: 'invalid'},
-			{description: 'bar', state: 'fixed'}
-		]);
+    expect(result).to.have.property('record');
+    expect(result).to.have.property('valid', false);
+    expect(result).to.have.deep.property('report', [
+      {description: 'foo', state: 'invalid'},
+      {description: 'bar', state: 'fixed'}
+    ]);
 
-		expect(result.record.toObject()).to.eql({
-			leader: '',
-			fields: [
-				{tag: 'FOO', value: 'foo'},
-				{tag: 'BAR', value: 'bar'}
-			]
-		});
-	});
+    expect(result.record.toObject()).to.eql({
+      leader: '',
+      fields: [
+        {tag: 'FOO', value: 'foo'},
+        {tag: 'BAR', value: 'bar'}
+      ]
+    });
+  });
 });

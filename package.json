@@ -34,7 +34,8 @@
 		"publish-to-npm": "npm install && npm test && npm run coverage && npm publish --access=public"
 	},
 	"dependencies": {
-		"@natlibfi/marc-record": "^4.0.0"
+		"@babel/runtime": "^7.11.2",
+		"@natlibfi/marc-record": "^6.1.1"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
@@ -47,8 +48,8 @@
 		"chokidar-cli": "^1.2.0",
 		"codeclimate-test-reporter": ">=0.5.0 <1.0.0",
 		"cross-env": "^5.2.0",
-		"eslint": "^5.2.0",
-		"eslint-config-xo": ">=0.24.1 <1.0.0",
+		"eslint": "^7.9.0",
+		"@natlibfi/eslint-config-melinda-backend": ">1.0.0-alpha.1",
 		"eslint-plugin-import": "^2.13.0",
 		"eslint-plugin-mocha": "^5.1.0",
 		"mocha": "^5.2.0",
@@ -62,15 +63,7 @@
 		"plugins": [
 			"import"
 		],
-		"extends": [
-			"xo",
-			"plugin:import/errors"
-		],
-		"rules": {
-			"prefer-arrow-callback": [
-				"error"
-			]
-		},
+		"extends": "@natlibfi/melinda-backend",
 		"env": {
 			"mocha": true
 		}
