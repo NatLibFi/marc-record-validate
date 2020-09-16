@@ -17,72 +17,57 @@
 	"version": "5.0.1",
 	"main": "./dist/index.js",
 	"engines": {
-		"node": ">=7"
+		"node": ">=12"
+	},
+	"publishConfig": {
+		"access": "public"
 	},
 	"scripts": {
-		"prepublishOnly": "npm run build:transpile",
-		"check-deps": "npm-check;exit 0",
-		"lint": "eslint --fix src",
-		"test:unit:base": "cross-env NODE_ENV=test nyc -x src/**/*.spec.js mocha --require babel-core/register",
-		"test:unit": "npm run test:unit:base -- src/**/*.spec.js",
-		"test": "npm run lint && npm run test:unit && npm run coverage",
-		"clean": "rimraf build dist",
-		"coverage": "nyc check-coverage",
+		"prepare": "npm run build",
+		"lint": "eslint src",
+		"lint:dev": "eslint --fix src",
+		"test:base": "cross-env NODE_ENV=test nyc -x src/*.spec.js mocha --require @babel/register",
+		"test": "npm run lint && npm run test:dev && npm run coverage",
+		"test:dev": "npm run lint:dev && npm run test:base -- src/*.spec.js",
+		"coverage": "nyc check-coverage --per-file",
 		"build:transpile": "babel src --source-maps --out-dir=dist --minified",
-		"build": "npm run clean && npm run build:transpile && npm run check-deps",
-		"watch": "cross-env DEBUG=1 NODE_ENV=test chokidar src -c 'npm test && npm run coverage'",
-		"publish-to-npm": "npm install && npm test && npm run coverage && npm publish --access=public"
+		"build": "babel src --source-maps --copy-files --delete-dir-on-start --out-dir=dist",
+		"watch": "cross-env DEBUG=1 NODE_ENV=test chokidar src -c 'npm test && npm run coverage'"
 	},
 	"dependencies": {
-		"@natlibfi/marc-record": "^4.0.0"
+		"@babel/runtime": "^7.11.2",
+		"@natlibfi/marc-record": "^6.1.1"
 	},
 	"devDependencies": {
-		"babel-cli": "^6.26.0",
-		"babel-eslint": "^8.2.6",
-		"babel-plugin-istanbul": "^4.1.5",
-		"babel-preset-env": "^1.6.1",
-		"babel-register": "^6.26.0",
+		"@babel/cli": "^7.10.1",
+		"@babel/core": "^7.10.1",
+		"@babel/node": "^7.10.1",
+		"@babel/preset-env": "^7.10.1",
+		"@babel/register": "^7.10.1",
+		"@natlibfi/eslint-config-melinda-backend": "^1.0.5",
+		"babel-eslint": "^10.1.0",
+		"babel-plugin-istanbul": "^6.0.0",
 		"chai": "^4.1.2",
 		"chai-as-promised": "^7.1.1",
 		"chokidar-cli": "^1.2.0",
 		"codeclimate-test-reporter": ">=0.5.0 <1.0.0",
 		"cross-env": "^5.2.0",
-		"eslint": "^5.2.0",
-		"eslint-config-xo": ">=0.24.1 <1.0.0",
+		"eslint": "^7.9.0",
 		"eslint-plugin-import": "^2.13.0",
 		"eslint-plugin-mocha": "^5.1.0",
 		"mocha": "^5.2.0",
-		"npm-check": "^5.7.1",
 		"nyc": "^12.0.2",
-		"rimraf": "^2.6.2",
 		"sinon": "^6.1.5"
 	},
 	"eslintConfig": {
-		"parser": "babel-eslint",
-		"plugins": [
-			"import"
-		],
-		"extends": [
-			"xo",
-			"plugin:import/errors"
-		],
-		"rules": {
-			"prefer-arrow-callback": [
-				"error"
-			]
-		},
-		"env": {
-			"mocha": true
-		}
+		"extends": "@natlibfi/melinda-backend"
 	},
 	"babel": {
 		"presets": [
 			[
-				"env",
+				"@babel/preset-env",
 				{
-					"targets": {
-						"node": "7"
-					}
+					"targets": "maintained node versions"
 				}
 			]
 		],
@@ -95,12 +80,15 @@
 		}
 	},
 	"nyc": {
+		"exclude": [
+			"*/*.spec.js"
+		],
 		"reporter": [
 			"lcov",
 			"html"
 		],
 		"require": [
-			"babel-register"
+			"@babel/register"
 		],
 		"sourceMap": false,
 		"instrument": false,

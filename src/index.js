@@ -26,93 +26,90 @@
 *
 */
 
-'use strict';
-
-/* eslint-disable require-await */
-
 import {MarcRecord} from '@natlibfi/marc-record';
 
 export default function (validators = []) {
-	if (validators.length === 0) {
-		throw new Error('No validators provided');
-	} else {
-		return async function (originalRecord, options = {}) {
-			const {fix = false, failOnError = false, validateFixes = false} = options;
-			const record = MarcRecord.clone(originalRecord);
+  if (validators.length === 0) { // eslint-disable-line functional/no-conditional-statement
+    throw new Error('No validators provided');
+  }
 
-			let results = await iterate(validators.slice());
+  return async function (originalRecord, options = {}, validationOptions = {}) {
+    const {fix = false, failOnError = false, validateFixes = false} = options;
+    const record = MarcRecord.clone(originalRecord, validationOptions);
 
-			if (validateFixes && results.some(r => r.state === 'fixed')) {
-				results = await iterateValidate(validators.slice(), results.slice());
-			}
+    let results = await iterate(validators.slice()); // eslint-disable-line functional/no-let
 
-			return {
-				record,
-				report: results,
-				valid: results.every(r => r.state !== 'invalid')
-			};
+    if (validateFixes && results.some(r => r.state === 'fixed')) { // eslint-disable-line functional/no-conditional-statement
+      results = await iterateValidate(validators.slice(), results.slice());
+    }
 
-			function getResponse(validator, messages) {
-				const response = {
-					description: validator.description,
-					state: 'invalid'
-				};
+    return {
+      record,
+      report: results,
+      valid: results.every(r => r.state !== 'invalid')
+    };
 
-				if (typeof (messages) !== 'undefined') {
-					response.messages = messages;
-				}
+    function getResponse(validator, messages) {
+      const response = {
+        description: validator.description,
+        state: 'invalid'
+      };
 
-				return response;
-			}
+      if (typeof messages !== 'undefined') {
+        response.messages = messages; // eslint-disable-line functional/immutable-data
+        return response;
+      }
 
-			async function iterate(pendingValidators, results = []) {
-				const validator = pendingValidators.shift();
+      return response;
+    }
 
-				if (validator) {
-					const {valid, messages} = await validator.validate(record);
-					const response = getResponse(validator, messages);
+    async function iterate(pendingValidators, results = []) {
+      const validator = pendingValidators.shift(); // eslint-disable-line functional/immutable-data
 
-					if (valid) {
-						response.state = 'valid';
-						return iterate(pendingValidators, results.concat(response));
-					}
+      if (validator) {
+        const {valid, messages} = await validator.validate(record);
+        const response = getResponse(validator, messages);
 
-					if (fix && validator.fix) {
-						await validator.fix(record);
-						response.state = 'fixed';
-						return iterate(pendingValidators, results.concat(response));
-					}
+        if (valid) {
+          response.state = 'valid'; // eslint-disable-line functional/immutable-data
+          return iterate(pendingValidators, results.concat(response));
+        }
 
-					if (failOnError) {
-						return results.concat(response);
-					}
+        if (fix && validator.fix) {
+          await validator.fix(record);
+          response.state = 'fixed'; // eslint-disable-line functional/immutable-data
+          return iterate(pendingValidators, results.concat(response));
+        }
 
-					return iterate(pendingValidators, results.concat(response));
-				}
-				return results;
-			}
+        if (failOnError) {
+          return results.concat(response);
+        }
 
-			async function iterateValidate(pendingValidators, pendingResults, results = []) {
-				const validator = pendingValidators.shift();
-				const originalResult = pendingResults.shift();
+        return iterate(pendingValidators, results.concat(response));
+      }
+      return results;
+    }
 
-				if (validator) {
-					const {valid, messages} = await validator.validate(record);
-					const response = getResponse(validator, messages);
+    async function iterateValidate(pendingValidators, pendingResults, results = []) {
+      const validator = pendingValidators.shift(); // eslint-disable-line functional/immutable-data
+      const originalResult = pendingResults.shift(); // eslint-disable-line functional/immutable-data
 
-					if (valid) {
-						response.state = originalResult.state === 'fixed' ? 'fixed' : 'valid';
-						return iterateValidate(pendingValidators, pendingResults, results.concat(response));
-					}
+      if (validator) {
+        const {valid, messages} = await validator.validate(record);
+        const response = getResponse(validator, messages);
 
-					if (failOnError) {
-						return results.concat(response);
-					}
+        if (valid) {
+          response.state = originalResult.state === 'fixed' ? 'fixed' : 'valid'; // eslint-disable-line functional/immutable-data
+          return iterateValidate(pendingValidators, pendingResults, results.concat(response));
+        }
 
-					return iterateValidate(pendingValidators, pendingResults, results.concat(response));
-				}
-				return results;
-			}
-		};
-	}
+        if (failOnError) {
+          return results.concat(response);
+        }
+
+        return iterateValidate(pendingValidators, pendingResults, results.concat(response));
+      }
+      return results;
+    }
+  };
 }
