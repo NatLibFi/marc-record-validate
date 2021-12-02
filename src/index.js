@@ -64,7 +64,7 @@ export default function (validators = []) {
     }
 
     async function iterate(pendingValidators, results = []) {
-      const validator = pendingValidators.shift(); // eslint-disable-line functional/immutable-data
+      const [validator, ...restPendingValidators] = pendingValidators;
 
       if (validator) {
         const {valid, messages} = await validator.validate(record);
@@ -72,27 +72,27 @@ export default function (validators = []) {
 
         if (valid) {
           response.state = 'valid'; // eslint-disable-line functional/immutable-data
-          return iterate(pendingValidators, results.concat(response));
+          return iterate(restPendingValidators, results.concat(response));
         }
 
         if (fix && validator.fix) {
           await validator.fix(record);
           response.state = 'fixed'; // eslint-disable-line functional/immutable-data
-          return iterate(pendingValidators, results.concat(response));
+          return iterate(restPendingValidators, results.concat(response));
         }
 
         if (failOnError) {
           return results.concat(response);
         }
 
-        return iterate(pendingValidators, results.concat(response));
+        return iterate(restPendingValidators, results.concat(response));
       }
       return results;
     }
 
     async function iterateValidate(pendingValidators, pendingResults, results = []) {
-      const validator = pendingValidators.shift(); // eslint-disable-line functional/immutable-data
-      const originalResult = pendingResults.shift(); // eslint-disable-line functional/immutable-data
+      const [validator, ...restPendingValidators] = pendingValidators;
+      const [originalResult, ...restPendingResults] = pendingResults;
 
       if (validator) {
         const {valid, messages} = await validator.validate(record);
@@ -100,14 +100,14 @@ export default function (validators = []) {
 
         if (valid) {
           response.state = originalResult.state === 'fixed' ? 'fixed' : 'valid'; // eslint-disable-line functional/immutable-data
-          return iterateValidate(pendingValidators, pendingResults, results.concat(response));
+          return iterateValidate(restPendingValidators, restPendingResults, results.concat(response));
         }
 
         if (failOnError) {
           return results.concat(response);
         }
 
-        return iterateValidate(pendingValidators, pendingResults, results.concat(response));
+        return iterateValidate(restPendingValidators, restPendingResults, results.concat(response));
       }
       return results;
     }
