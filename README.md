@@ -21,6 +21,6 @@ The module returns a factory function that takes an array of validators as an ar
 See [marc-record-validators-melinda](https://github.com/NatLibFi/marc-record-validators-melinda/wiki) for reference on how to write validators.
 ## License and copyright
 
-Copyright (c) 2014-2019 **University Of Helsinki (The National Library Of Finland)**
+Copyright (c) 2014-2019, 2022 **University Of Helsinki (The National Library Of Finland)**
 
 This project's source code is licensed under the terms of **GNU Lesser General Public License Version 3** or any later version.
