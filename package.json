@@ -14,10 +14,10 @@
 		"url": "git@github.com:natlibfi/marc-record-validate.git"
 	},
 	"license": "MIT",
-	"version": "7.0.3",
+	"version": "8.0.0-alpha.1",
 	"main": "./dist/index.js",
 	"engines": {
-		"node": ">=14"
+		"node": ">=18"
 	},
 	"publishConfig": {
 		"access": "public"
@@ -34,27 +34,27 @@
 		"build": "babel src --source-maps --copy-files --delete-dir-on-start --out-dir=dist"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.19.0",
-		"@natlibfi/marc-record": "^7.2.1"
+		"@babel/runtime": "^7.20.13",
+		"@natlibfi/marc-record": "^7.2.2"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.19.3",
-		"@babel/core": "^7.19.3",
+		"@babel/cli": "^7.20.7",
+		"@babel/core": "^7.20.12",
 		"@babel/eslint-parser": "^7.19.1",
-		"@babel/node": "^7.19.1",
-		"@babel/preset-env": "^7.19.3",
+		"@babel/node": "^7.20.7",
+		"@babel/preset-env": "^7.20.2",
 		"@babel/register": "^7.18.9",
-		"@natlibfi/eslint-config-melinda-backend": "^2.0.1",
+		"@natlibfi/eslint-config-melinda-backend": "^2.0.2",
 		"babel-plugin-istanbul": "^6.1.1",
-		"chai": "^4.3.6",
+		"chai": "^4.3.7",
 		"chai-as-promised": "^7.1.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.24.0",
-		"eslint-plugin-import": "^2.26.0",
+		"eslint": "^8.32.0",
+		"eslint-plugin-import": "^2.27.5",
 		"eslint-plugin-mocha": "^10.1.0",
-		"mocha": "^10.0.0",
+		"mocha": "^10.2.0",
 		"nyc": "^15.1.0",
-		"sinon": "^14.0.0"
+		"sinon": "^15.0.1"
 	},
 	"eslintConfig": {
 		"extends": "@natlibfi/melinda-backend"
