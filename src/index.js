@@ -29,7 +29,7 @@
 import {MarcRecord} from '@natlibfi/marc-record';
 
 export default function (validators = []) {
-  if (validators.length === 0) { // eslint-disable-line functional/no-conditional-statement
+  if (validators.length === 0) { // eslint-disable-line functional/no-conditional-statements
     throw new Error('No validators provided');
   }
 
@@ -39,7 +39,7 @@ export default function (validators = []) {
 
     let results = await iterate(validators.slice()); // eslint-disable-line functional/no-let
 
-    if (validateFixes && results.some(r => r.state === 'fixed')) { // eslint-disable-line functional/no-conditional-statement
+    if (validateFixes && results.some(r => r.state === 'fixed')) { // eslint-disable-line functional/no-conditional-statements
       results = await iterateValidate(validators.slice(), results.slice());
     }
 
