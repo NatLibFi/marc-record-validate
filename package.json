@@ -14,7 +14,7 @@
 		"url": "git@github.com:natlibfi/marc-record-validate.git"
 	},
 	"license": "MIT",
-	"version": "8.0.3",
+	"version": "8.0.4-alpha.1",
 	"main": "./dist/index.js",
 	"engines": {
 		"node": ">=18"
@@ -77,11 +77,11 @@
 	},
 	"mocha": {
 		"spec": [
-		  "src/*.spec.js",
-		  "src/**/*.spec.js"
+			"src/*.spec.js",
+			"src/**/*.spec.js"
 		],
 		"require": [
-		  "@babel/register"
+			"@babel/register"
 		],
 		"inline-diffs": true,
 		"maxDiffSize": 25000,
