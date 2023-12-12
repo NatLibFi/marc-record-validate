@@ -14,7 +14,7 @@
 		"url": "git@github.com:natlibfi/marc-record-validate.git"
 	},
 	"license": "MIT",
-	"version": "8.0.3",
+	"version": "8.0.4-alpha.3",
 	"main": "./dist/index.js",
 	"engines": {
 		"node": ">=18"
@@ -24,37 +24,36 @@
 	},
 	"scripts": {
 		"prepare": "npm run build",
-		"lint": "eslint src",
-		"lint:dev": "eslint --fix src",
-		"test:base": "cross-env NODE_ENV=test nyc -x src/*.spec.js mocha --require @babel/register",
+		"build": "babel src --source-maps --copy-files --delete-dir-on-start --out-dir=dist",
+		"lint": "eslint ./src",
+		"lint:dev": "eslint --fix ./src",
+		"test:base": "cross-env NODE_ENV=test nyc mocha --package ./package.json",
 		"test": "npm run lint && npm run test:dev && npm run coverage",
 		"test:dev": "npm run lint:dev && npm run test:base -- src/*.spec.js",
 		"coverage": "nyc check-coverage --per-file",
-		"build:transpile": "babel src --source-maps --out-dir=dist --minified",
-		"build": "babel src --source-maps --copy-files --delete-dir-on-start --out-dir=dist"
+		"build:transpile": "babel src --source-maps --out-dir=dist --minified"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.23.2",
-		"@natlibfi/marc-record": "^7.3.1"
+		"@babel/runtime": "^7.23.6",
+		"@natlibfi/marc-record": "^8.0.2"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.23.0",
-		"@babel/core": "^7.23.2",
-		"@babel/eslint-parser": "^7.22.15",
+		"@babel/cli": "^7.23.4",
+		"@babel/core": "^7.23.6",
 		"@babel/node": "^7.22.19",
-		"@babel/preset-env": "^7.23.2",
+		"@babel/preset-env": "^7.23.6",
 		"@babel/register": "^7.22.15",
-		"@natlibfi/eslint-config-melinda-backend": "^3.0.2",
+		"@natlibfi/eslint-config-melinda-backend": "^3.0.3",
 		"babel-plugin-istanbul": "^6.1.1",
 		"chai": "^4.3.10",
 		"chai-as-promised": "^7.1.1",
 		"cross-env": "^7.0.3",
-		"eslint": "^8.51.0",
-		"eslint-plugin-import": "^2.28.1",
+		"eslint": "^8.55.0",
+		"eslint-plugin-import": "^2.29.0",
 		"eslint-plugin-mocha": "^10.2.0",
 		"mocha": "^10.2.0",
 		"nyc": "^15.1.0",
-		"sinon": "^15.2.0"
+		"sinon": "^17.0.1"
 	},
 	"eslintConfig": {
 		"extends": "@natlibfi/melinda-backend"
@@ -76,16 +75,26 @@
 			}
 		}
 	},
-	"nyc": {
-		"exclude": [
-			"*/*.spec.js"
-		],
-		"reporter": [
-			"lcov",
-			"html"
+	"mocha": {
+		"spec": [
+			"src/*.spec.js",
+			"src/**/*.spec.js"
 		],
 		"require": [
 			"@babel/register"
+		],
+		"inline-diffs": true,
+		"maxDiffSize": 25000,
+		"bail": true,
+		"exit": true
+	},
+	"nyc": {
+		"exclude": [
+			"*/*.spec.js",
+			"src/**/*.spec.js"
+		],
+		"reporter": [
+			"text"
 		],
 		"sourceMap": false,
 		"instrument": false,
