@@ -34,25 +34,25 @@
 		"build:transpile": "babel src --source-maps --out-dir=dist --minified"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.24.7",
+		"@babel/runtime": "^7.25.0",
 		"@natlibfi/marc-record": "^9.0.0"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.24.7",
-		"@babel/core": "^7.24.7",
-		"@babel/node": "^7.24.7",
-		"@babel/preset-env": "^7.24.7",
+		"@babel/cli": "^7.24.8",
+		"@babel/core": "^7.25.2",
+		"@babel/node": "^7.25.0",
+		"@babel/preset-env": "^7.25.3",
 		"@babel/register": "^7.24.6",
 		"@natlibfi/eslint-config-melinda-backend": "^3.0.5",
-		"babel-plugin-istanbul": "^6.1.1",
-		"chai": "^4.4.1",
+		"babel-plugin-istanbul": "^7.0.0",
+		"chai": "^4.5.0",
 		"chai-as-promised": "^7.1.2",
 		"cross-env": "^7.0.3",
 		"eslint": "^8.57.0",
 		"eslint-plugin-import": "^2.29.1",
-		"eslint-plugin-mocha": "^10.4.3",
-		"mocha": "^10.6.0",
-		"nyc": "^15.1.0",
+		"eslint-plugin-mocha": "^10.5.0",
+		"mocha": "^10.7.3",
+		"nyc": "^17.0.0",
 		"sinon": "^17.0.1"
 	},
 	"eslintConfig": {
