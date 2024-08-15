@@ -14,7 +14,7 @@
 		"url": "git@github.com:natlibfi/marc-record-validate.git"
 	},
 	"license": "MIT",
-	"version": "8.0.9",
+	"version": "8.0.10-alpha.1",
 	"main": "./dist/index.js",
 	"engines": {
 		"node": ">=18"
@@ -35,7 +35,7 @@
 	},
 	"dependencies": {
 		"@babel/runtime": "^7.25.0",
-		"@natlibfi/marc-record": "^9.0.0"
+		"@natlibfi/marc-record": "^9.0.1"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.24.8",
