@@ -14,7 +14,7 @@
 		"url": "git@github.com:natlibfi/marc-record-validate.git"
 	},
 	"license": "MIT",
-	"version": "8.0.11",
+	"version": "8.0.12-alpha.1",
 	"main": "./dist/index.js",
 	"engines": {
 		"node": ">=18"
@@ -34,15 +34,15 @@
 		"build:transpile": "babel src --source-maps --out-dir=dist --minified"
 	},
 	"dependencies": {
-		"@babel/runtime": "^7.25.7",
-		"@natlibfi/marc-record": "^9.0.2"
+		"@babel/runtime": "^7.26.0",
+		"@natlibfi/marc-record": "^9.1.1"
 	},
 	"devDependencies": {
-		"@babel/cli": "^7.25.7",
-		"@babel/core": "^7.25.8",
-		"@babel/node": "^7.25.7",
-		"@babel/preset-env": "^7.25.8",
-		"@babel/register": "^7.25.7",
+		"@babel/cli": "^7.25.9",
+		"@babel/core": "^7.26.0",
+		"@babel/node": "^7.26.0",
+		"@babel/preset-env": "^7.26.0",
+		"@babel/register": "^7.25.9",
 		"@natlibfi/eslint-config-melinda-backend": "^3.0.5",
 		"babel-plugin-istanbul": "^7.0.0",
 		"chai": "^4.5.0",
@@ -51,7 +51,7 @@
 		"eslint": "^8.57.1",
 		"eslint-plugin-import": "^2.31.0",
 		"eslint-plugin-mocha": "^10.5.0",
-		"mocha": "^10.7.3",
+		"mocha": "^10.8.2",
 		"nyc": "^17.1.0",
 		"sinon": "^17.0.1"
 	},
