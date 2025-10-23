@@ -5,13 +5,12 @@
 		"name": "The National Library of Finland"
 	},
 	"keywords": [],
-	"homepage": "https://github.com/natlibfi/marc-record-validate",
+	"homepage": "https://www.npmjs.com/package/@natlibfi/marc-record-validate",
 	"bugs": {
 		"url": "https://github.com/natlibfi/marc-record-validate/issues"
 	},
 	"repository": {
-		"type": "git",
-		"url": "git@github.com:natlibfi/marc-record-validate.git"
+		"url": "https://github.com/NatLibFi/marc-record-validate"
 	},
 	"license": "MIT",
 	"version": "9.0.0-alpha.1",
@@ -35,7 +34,7 @@
 		"dev:debug": "cross-env LOG_LEVEL=debug DEBUG=@natlibfi/* NODE_ENV=test npm run watch:test"
 	},
 	"dependencies": {
-		"@natlibfi/marc-record": "^10.0.0-alpha.1"
+		"@natlibfi/marc-record": "next"
 	},
 	"devDependencies": {
 		"cross-env": "^7.0.3",
