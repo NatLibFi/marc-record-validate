@@ -13,7 +13,7 @@
 		"url": "https://github.com/NatLibFi/marc-record-validate"
 	},
 	"license": "MIT",
-	"version": "9.0.0-alpha.1",
+	"version": "9.0.0-alpha.2",
 	"main": "./dist/index.js",
 	"type": "module",
 	"engines": {
