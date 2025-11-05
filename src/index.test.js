@@ -1,39 +1,16 @@
-/**
-*
-* @licstart  The following is the entire license notice for the JavaScript code in this file.
-*
-* Validate and fix MARC records
-*
-* Copyright (c) 2014-2019 University Of Helsinki (The National Library Of Finland)
-*
-* This file is part of marc-record-validate
-*
-* marc-record-validate program is free software: you can redistribute it and/or modify
-* it under the terms of the GNU Lesser General Public License as
-* published by the Free Software Foundation, either version 3 of the
-* License, or (at your option) any later version.
-*
-* marc-record-validate is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-* GNU Lesser General Public License for more details.
-*
-* You should have received a copy of the GNU Lesser General Public License
-* along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*
-* @licend  The above is the entire license notice
-* for the JavaScript code in this file.
-*
-*/
-
-import {expect} from 'chai';
+import {describe, it} from 'node:test';
+import assert from 'node:assert';
 import sinon from 'sinon';
 import {MarcRecord} from '@natlibfi/marc-record';
-import validateFactory from '../src';
+import validateFactory from './index.js';
 
 describe('index', () => {
   it('Should throw and error because of undefined validators', () => {
-    expect(validateFactory).to.throw(Error, /^No validators provided$/u);
+    try {
+      validateFactory();
+    } catch (error) {
+      assert.match(error.message, new RegExp('^No validators provided$', 'u'));
+    }
   });
 
   it('Should validate and fix a record', async () => {
@@ -46,11 +23,14 @@ describe('index', () => {
     const record = new MarcRecord({fields: [{tag: 'FOO', value: 'foo'}]});
     const result = await validate(record, {fix: true});
 
-    expect(result).to.have.property('record');
-    expect(result).to.have.property('valid', true);
-    expect(result).to.have.deep.property('report', [{description: 'foo', state: 'fixed'}]);
+    assert.equal(typeof result, 'object');
+    assert.equal(Object.hasOwn(result, 'record'), true);
+    assert.equal(Object.hasOwn(result, 'valid'), true);
 
-    expect(result.record.toObject()).to.eql({
+    assert.equal(Object.hasOwn(result, 'report'), true);
+    assert.deepStrictEqual(result.report, [{description: 'foo', state: 'fixed'}]);
+
+    assert.deepStrictEqual(result.record.toObject(), {
       leader: '',
       fields: [
         {tag: 'FOO', value: 'foo'},
@@ -72,13 +52,16 @@ describe('index', () => {
     const record = new MarcRecord({fields: [{tag: 'FOO', value: 'bar'}]});
     const result = await validate(record, {failOnError: true});
 
-    expect(validator2.validate.called).to.be.false; // eslint-disable-line no-unused-expressions
+    assert.equal(validator2.validate.called, false);
 
-    expect(result).to.have.property('record');
-    expect(result).to.have.property('valid', false);
-    expect(result).to.have.deep.property('report', [{description: 'foo', state: 'invalid'}]);
+    assert.equal(typeof result, 'object');
+    assert.equal(Object.hasOwn(result, 'record'), true);
+    assert.equal(Object.hasOwn(result, 'valid'), true);
 
-    expect(MarcRecord.isEqual(record, result.record)).to.be.true; // eslint-disable-line no-unused-expressions
+    assert.equal(Object.hasOwn(result, 'report'), true);
+    assert.deepStrictEqual(result.report, [{description: 'foo', state: 'invalid'}]);
+
+    assert.equal(MarcRecord.isEqual(record, result.record), true);
   });
 
   it('Should validate the fixes', async () => {
@@ -99,14 +82,17 @@ describe('index', () => {
     const record = new MarcRecord({fields: [{tag: 'FOO', value: 'foo'}]});
     const result = await validate(record, {fix: true, validateFixes: true});
 
-    expect(result).to.have.property('record');
-    expect(result).to.have.property('valid', false);
-    expect(result).to.have.deep.property('report', [
+    assert.equal(typeof result, 'object');
+    assert.equal(Object.hasOwn(result, 'record'), true);
+    assert.equal(Object.hasOwn(result, 'valid'), true);
+
+    assert.equal(Object.hasOwn(result, 'report'), true);
+    assert.deepStrictEqual(result.report, [
       {description: 'foo', state: 'invalid'},
       {description: 'bar', state: 'fixed'}
     ]);
 
-    expect(result.record.toObject()).to.eql({
+    assert.deepStrictEqual(result.record.toObject(), {
       leader: '',
       fields: [
         {tag: 'FOO', value: 'foo'},
